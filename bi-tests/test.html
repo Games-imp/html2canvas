@@ -1,0 +1,333 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--基于标准化的boxmodel来统一浏览器 -->
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset='utf-8'>
+    <script type='text/javascript' src='http://192.168.1.121:8075/WebReport/ReportServer?op=emb&resource=finereport.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script>
+    <script type='text/javascript' src='http://192.168.1.121:8075/WebReport/ReportServer?op=emb&resource=third.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script>
+    <script type='text/javascript' src='http://192.168.1.121:8075/WebReport/ReportServer?op=emb&resource=base.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script>
+    <!-- <script type='text/javascript' src='http://192.168.1.108:8075/WebReport/ReportServer?op=emb&resource=export.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script> -->
+    <script type='text/javascript' src='../examples/es6-promise.js'></script>
+    <script type='text/javascript' src='../dist/html2canvas.js'></script>
+    <script type='text/javascript' src='../dist/html2canvas.svg.js'></script>
+    <style>
+        #wrapper {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+        }
+
+        #canvas {
+            position: absolute;
+            left: 600px;
+            width: 500px;
+            height: 500px;
+            /* border: 1.5px solid red; */
+            /* background-color: blue; */
+        }
+
+    </style>
+</head>
+
+<body width='500px' height='500px'>
+    <!-- <img id='img'> -->
+    <div id='wrapper' width='500px' height='500px'></div>
+    <div id="canvas" height='500px'>
+
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="500" height="40" viewBox="0 0 500 40"> -->
+            <!-- <text y="10.2" x="0" style="opacity: 1; font-family: 'Microsoft YaHei'; color: rgb(26, 26, 26); font-size: 0.75rem; fill: rgb(26, 26, 26);">500000</text> -->
+            <!-- <text x="0" y="35" font-family="Verdana" font-size="35">
+                Hello, out there
+            </text>
+        </svg> -->
+    </div>
+    <!-- <svg id='svg' width='590' height='500'>
+        <circle cx="100" cy="50" r="40" stroke="black" stroke-width="2" fill="red"></circle>
+    </svg> -->
+    <!-- <svg id = 'svg' aria-hidden="true" class="octicon octicon-mark-github" height="32" version="1.1" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>  -->
+    <script>
+        var options = {
+            "plotOptions": {
+                "dataLabels": {
+                    "autoAdjust": true,
+                    "enabled": false
+                },
+                "connectNulls": true,
+                "borderWidth": 0,
+                "tooltip": {
+                    "padding": 10,
+                    "backgroundColor": "#ffffff",
+                    "borderRadius": 2,
+                    "shadow": true,
+                    "borderWidth": 0,
+                    "style": {
+                        "fontFamily": "Verdana",
+                        "color": "#1a1a1a",
+                        "fontSize": "14px"
+                    },
+                    "enabled": true,
+                    "animation": true
+                },
+                "inverted": false,
+                "animation": true
+            },
+            "yAxis": [{
+                "gridLineColor": "#dddddd",
+                "lineColor": "#dddddd",
+                "plotLines": [],
+                "type": "value",
+                "title": {
+                    "rotation": 90,
+                    "style": {
+                        "fontFamily": "Microsoft YaHei",
+                        "color": "#1a1a1a",
+                        "fontSize": "12px",
+                        "fontStyle": "",
+                        "fontWeight": ""
+                    },
+                    "text": ""
+                },
+                "showLabel": true,
+                "lineWidth": 1,
+                "formatter": "function(){return BI.contentFormat(arguments[0], \"#,###.##\")}",
+                "gridLineWidth": 1,
+                "maxHeight": "30%",
+                "labelStyle": {
+                    "fontFamily": "Microsoft YaHei",
+                    "color": "#1a1a1a",
+                    "fontSize": "12px",
+                    "fontStyle": "",
+                    "fontWeight": ""
+                },
+                "position": "left",
+                "labelRotation": 0,
+                "reversed": false,
+                "maxWidth": "30%"
+            }, {
+                "gridLineColor": "#dddddd",
+                "lineColor": "#dddddd",
+                "plotLines": [],
+                "type": "value",
+                "title": {
+                    "rotation": 90,
+                    "style": {
+                        "fontFamily": "Microsoft YaHei",
+                        "color": "#1a1a1a",
+                        "fontSize": "12px",
+                        "fontStyle": "",
+                        "fontWeight": ""
+                    },
+                    "text": ""
+                },
+                "showLabel": true,
+                "lineWidth": 1,
+                "formatter": "function(){return BI.contentFormat(arguments[0], \"#,###.##\")}",
+                "gridLineWidth": 0,
+                "maxHeight": "30%",
+                "labelStyle": {
+                    "fontFamily": "Microsoft YaHei",
+                    "color": "#1a1a1a",
+                    "fontSize": "12px",
+                    "fontStyle": "",
+                    "fontWeight": ""
+                },
+                "position": "right",
+                "labelRotation": 0,
+                "reversed": false,
+                "maxWidth": "30%"
+            }, {
+                "gridLineColor": "#dddddd",
+                "lineColor": "#dddddd",
+                "plotLines": [],
+                "type": "value",
+                "title": {
+                    "rotation": 90,
+                    "style": {
+                        "fontFamily": "Microsoft YaHei",
+                        "color": "#1a1a1a",
+                        "fontSize": "12px",
+                        "fontStyle": "",
+                        "fontWeight": ""
+                    },
+                    "text": ""
+                },
+                "showLabel": true,
+                "lineWidth": 1,
+                "formatter": "function(){return BI.contentFormat(arguments[0], \"#,###.##\")}",
+                "gridLineWidth": 0,
+                "maxHeight": "30%",
+                "labelStyle": {
+                    "fontFamily": "Microsoft YaHei",
+                    "color": "#1a1a1a",
+                    "fontSize": "12px",
+                    "fontStyle": "",
+                    "fontWeight": ""
+                },
+                "position": "right",
+                "labelRotation": 0,
+                "reversed": false,
+                "maxWidth": "30%"
+            }],
+            "xAxis": [{
+                "gridLineColor": "#dddddd",
+                "gridLineWidth": 1,
+                "maxHeight": "30%",
+                "labelStyle": {
+                    "fontFamily": "Microsoft YaHei",
+                    "color": "#1a1a1a",
+                    "fontSize": "12px",
+                    "fontStyle": "",
+                    "fontWeight": ""
+                },
+                "lineColor": "#dddddd",
+                "position": "bottom",
+                "type": "category",
+                "title": {
+                    "rotation": 0,
+                    "style": {
+                        "fontFamily": "Microsoft YaHei",
+                        "color": "#1a1a1a",
+                        "fontSize": "12px",
+                        "fontStyle": "",
+                        "fontWeight": ""
+                    },
+                    "text": ""
+                },
+                "labelRotation": 0,
+                "showLabel": true,
+                "reversed": false,
+                "maxWidth": "30%"
+            }],
+            "data": {
+                "s": [2.7787643E8],
+                "c": [{
+                    "s": [1.9485E7],
+                    "x": 1,
+                    "n": "长期协议"
+                }, {
+                    "s": [2.477942E7],
+                    "x": 1,
+                    "n": "长期协议订单"
+                }, {
+                    "s": [1.16658E7],
+                    "x": 1,
+                    "n": "服务协议"
+                }, {
+                    "s": [2.2194621E8],
+                    "x": 1,
+                    "n": "购买合同"
+                }],
+                "x": 5
+            },
+            "legend": {
+                "visible": true,
+                "maxHeight": "30%",
+                "style": {
+                    "fontFamily": "Microsoft YaHei",
+                    "color": "#1a1a1a",
+                    "fontSize": "12px",
+                    "fontStyle": "",
+                    "fontWeight": ""
+                },
+                "position": "bottom",
+                "enabled": true,
+                "maxWidth": "30%"
+            },
+            "series": [{
+                "yAxis": 0,
+                "dimensionIDs": ["61dceaa81c9208b9"],
+                "data": [{
+                    "x": "长期协议",
+                    "y": "19485000",
+                    "longDate": ""
+                }, {
+                    "x": "长期协议订单",
+                    "y": "24779420",
+                    "longDate": ""
+                }, {
+                    "x": "服务协议",
+                    "y": "11665800",
+                    "longDate": ""
+                }, {
+                    "x": "购买合同",
+                    "y": "221946210",
+                    "longDate": ""
+                }],
+                "targetIDs": ["4d658d7166245dc2"],
+                "name": "合同金额",
+                "tooltip": {
+                    "formatter": {
+                        "identifier": "${CATEGORY}${SERIES}${VALUE}",
+                        "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
+                        "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
+                        "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
+                    },
+                    "padding": 10,
+                    "backgroundColor": "#ffffff",
+                    "borderRadius": 2,
+                    "shadow": true,
+                    "borderWidth": 0,
+                    "style": {
+                        "fontFamily": "Verdana",
+                        "color": "#1a1a1a",
+                        "fontSize": "14px"
+                    },
+                    "enabled": true,
+                    "animation": true
+                },
+                "type": "column"
+            }],
+            "chartType": "column",
+            "style": "normal",
+            "tools": {
+                "hidden": false,
+                "toImage": {
+                    "enabled": false
+                },
+                "refresh": {
+                    "enabled": false
+                },
+                "sort": {
+                    "enabled": false
+                },
+                "fullScreen": {
+                    "enabled": false
+                }
+            },
+            "dataSheet": {
+                "borderColor": "#dddddd",
+                "borderWidth": 1,
+                "style": {
+                    "fontFamily": "Microsoft YaHei",
+                    "color": "#1a1a1a",
+                    "fontSize": "12px",
+                    "fontStyle": "",
+                    "fontWeight": ""
+                },
+                "enabled": false
+            },
+            "colors": ["#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398",
+                "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc", "#5867c3", "#ff525e", "#ffa9cc",
+                "#ffaa00",
+                "#ffdb03", "#9ccc66", "#36c398", "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc",
+                "#5867c3",
+                "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398"
+            ]
+        };
+
+        var wrapper = VanCharts.init($('#wrapper')[0]);
+        wrapper.setOptions(options);
+
+        setTimeout(function () {
+            html2canvas($('#wrapper')[0]).then(function (canvas) {
+                // console.log(canvas.toDataURL());
+                $('#canvas').append(canvas)
+            })
+        }, 1000)
+
+    </script>
+</body>
+
+</html>
