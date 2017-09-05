@@ -1,1 +1,0 @@
-## 去掉 this.drawSelectionBackground(ctx);这句否则用html2canvas.svg时报错

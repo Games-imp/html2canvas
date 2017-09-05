@@ -137,7 +137,7 @@ module.exports = function(grunt) {
                 options: {
                     args: ['modules=' + ['text','serialization',
                         'parser', 'gradient', 'pattern', 'shadow', 'freedrawing',
-                        'image_filters', 'serialization'].join(","), 'no-es5-compat', 'dest=' + path.resolve(__dirname, 'src/fabric/dist/') + '/']
+                        'image_filters', 'serialization', 'animation', 'interaction'].join(","), 'no-es5-compat', 'dest=' + path.resolve(__dirname, 'src/fabric/dist/') + '/']
                 },
                 src: ['src/fabric/build.js']
             }
