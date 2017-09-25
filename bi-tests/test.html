@@ -9,7 +9,7 @@
     <!-- <script type='text/javascript' src='http://192.168.1.115:8075/WebReport/ReportServer?op=emb&resource=third.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script> -->
     <!-- <script type='text/javascript' src='http://192.168.1.115:8075/WebReport/ReportServer?op=emb&resource=base.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script> -->
     <!-- <script type='text/javascript' src='http://192.168.1.115:8075/WebReport/ReportServer?op=emb&resource=export.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script> -->
-    <script type='text/javascript' src='/Users/astronaut007/Desktop/project/BI-feature/nuclear-web/fbi_web/src/com/fr/bi/web/js/lib/vancharts-all.js'></script>
+    <script type='text/javascript' src='./vancharts-all.js'></script>
     <script type='text/javascript' src='../examples/es6_promise.js'></script>
     <script type='text/javascript' src='../dist/html2canvas.js'></script>
     <script type='text/javascript' src='../dist/html2canvas.svg.js'></script>
@@ -22,7 +22,7 @@
 
         #canvas {
             position: absolute;
-            left: 600px;
+            top: 500px;
             width: 500px;
             height: 500px;
             /* border: 1.5px solid red; */
@@ -32,203 +32,131 @@
     </style>
 </head>
 
-<body width='500px' height='500px'>
-    <!-- <img id='img'> -->
-    <div id='wrapper' width='500px' height='500px'></div>
-    <div id="canvas" height='500px'>
+<body>
+<!-- <img id='img'> -->
+<div id='wrapper' style='position: absolute'>
+    <!--<div>123</div>-->
+    <div id="vessel" style='position: absolute; width: 500px; height: 500px'></div>
+</div>
+<img id="canvas">
 
-        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="500" height="40" viewBox="0 0 500 40"> -->
-            <!-- <text y="10.2" x="0" style="opacity: 1; font-family: 'Microsoft YaHei'; color: rgb(26, 26, 26); font-size: 0.75rem; fill: rgb(26, 26, 26);">500000</text> -->
-            <!-- <text x="0" y="35" font-family="Verdana" font-size="35">
-                Hello, out there
-            </text>
-        </svg> -->
-    </div>
-    <!-- <svg id='svg' width='590' height='500'>
-        <circle cx="100" cy="50" r="40" stroke="black" stroke-width="2" fill="red"></circle>
-    </svg> -->
-    <!-- <svg id = 'svg' aria-hidden="true" class="octicon octicon-mark-github" height="32" version="1.1" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>  -->
-    <script>
-        var BI = {};
-        BI.contentFormat = function () {
-            return 123;
-        };
-        var options = {
-            "plotOptions": {
-                "dataLabels": {
-                    "autoAdjust": true,
-                    "enabled": false
-                },
-                "connectNulls": true,
+<!-- <svg xmlns="http://www.w3.org/2000/svg" width="500" height="40" viewBox="0 0 500 40"> -->
+<!-- <text y="10.2" x="0" style="opacity: 1; font-family: 'Microsoft YaHei'; color: rgb(26, 26, 26); font-size: 0.75rem; fill: rgb(26, 26, 26);">500000</text> -->
+<!-- <text x="0" y="35" font-family="Verdana" font-size="35">
+    Hello, out there
+</text>
+</svg> -->
+</div>
+<!-- <svg id='svg' width='590' height='500'>
+    <circle cx="100" cy="50" r="40" stroke="black" stroke-width="2" fill="red"></circle>
+</svg> -->
+<!-- <svg id = 'svg' aria-hidden="true" class="octicon octicon-mark-github" height="32" version="1.1" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>  -->
+<script>
+    var BI = {};
+    BI.contentFormat = function () {
+        return 123;
+    };
+    var options = {
+        "plotOptions": {
+            "dataLabels": {"autoAdjust": true, "enabled": false},
+            "borderWidth": 0,
+            "roseType": "",
+            "tooltip": {
+                "formatter": {"identifier": "${SERIES}${CATEGORY}${VALUE}${PERCENT}${SERIES}"},
+                "padding": 10,
+                "shared": false,
+                "backgroundColor": "#ffffff",
+                "borderRadius": 2,
+                "shadow": true,
                 "borderWidth": 0,
-                "tooltip": {
-                    "padding": 10,
-                    "backgroundColor": "#ffffff",
-                    "borderRadius": 2,
-                    "shadow": true,
-                    "borderWidth": 0,
-                    "style": {
-                        "fontFamily": "Verdana",
-                        "color": "#1a1a1a",
-                        "fontSize": "14px"
-                    },
-                    "enabled": true,
-                    "animation": true
+                "style": {
+                    "fontFamily": "Microsoft YaHei",
+                    "color": "#1a1a1a",
+                    "fontSize": "12px",
+                    "fontStyle": "",
+                    "fontWeight": ""
                 },
-                "inverted": false,
+                "enabled": true,
                 "animation": true
             },
-            "yAxis": [{
-                "gridLineColor": "#dddddd",
-                "lineColor": "#dddddd",
-                "plotLines": [],
-                "type": "value",
-                "title": {
-                    "rotation": 90,
-                    "style": {
-                        "fontFamily": "Microsoft YaHei",
-                        "color": "#1a1a1a",
-                        "fontSize": "12px",
-                        "fontStyle": "",
-                        "fontWeight": ""
-                    },
-                    "text": ""
-                },
-                "showLabel": true,
-                "lineWidth": 1,
-                "formatter": "function(){return BI.contentFormat(arguments[0], \"#,###.##\")}",
-                "gridLineWidth": 1,
-                "maxHeight": "30%",
-                "labelStyle": {
-                    "fontFamily": "Microsoft YaHei",
-                    "color": "#1a1a1a",
-                    "fontSize": "12px",
-                    "fontStyle": "",
-                    "fontWeight": ""
-                },
-                "position": "left",
-                "labelRotation": 0,
-                "reversed": false,
-                "maxWidth": "30%"
-            }, {
-                "gridLineColor": "#dddddd",
-                "lineColor": "#dddddd",
-                "plotLines": [],
-                "type": "value",
-                "title": {
-                    "rotation": 90,
-                    "style": {
-                        "fontFamily": "Microsoft YaHei",
-                        "color": "#1a1a1a",
-                        "fontSize": "12px",
-                        "fontStyle": "",
-                        "fontWeight": ""
-                    },
-                    "text": ""
-                },
-                "showLabel": true,
-                "lineWidth": 1,
-                "formatter": "function(){return BI.contentFormat(arguments[0], \"#,###.##\")}",
-                "gridLineWidth": 0,
-                "maxHeight": "30%",
-                "labelStyle": {
-                    "fontFamily": "Microsoft YaHei",
-                    "color": "#1a1a1a",
-                    "fontSize": "12px",
-                    "fontStyle": "",
-                    "fontWeight": ""
-                },
-                "position": "right",
-                "labelRotation": 0,
-                "reversed": false,
-                "maxWidth": "30%"
-            }, {
-                "gridLineColor": "#dddddd",
-                "lineColor": "#dddddd",
-                "plotLines": [],
-                "type": "value",
-                "title": {
-                    "rotation": 90,
-                    "style": {
-                        "fontFamily": "Microsoft YaHei",
-                        "color": "#1a1a1a",
-                        "fontSize": "12px",
-                        "fontStyle": "",
-                        "fontWeight": ""
-                    },
-                    "text": ""
-                },
-                "showLabel": true,
-                "lineWidth": 1,
-                "formatter": "function(){return BI.contentFormat(arguments[0], \"#,###.##\")}",
-                "gridLineWidth": 0,
-                "maxHeight": "30%",
-                "labelStyle": {
-                    "fontFamily": "Microsoft YaHei",
-                    "color": "#1a1a1a",
-                    "fontSize": "12px",
-                    "fontStyle": "",
-                    "fontWeight": ""
-                },
-                "position": "right",
-                "labelRotation": 0,
-                "reversed": false,
-                "maxWidth": "30%"
-            }],
-            "xAxis": [{
-                "gridLineColor": "#dddddd",
-                "gridLineWidth": 1,
-                "maxHeight": "30%",
-                "labelStyle": {
-                    "fontFamily": "Microsoft YaHei",
-                    "color": "#1a1a1a",
-                    "fontSize": "12px",
-                    "fontStyle": "",
-                    "fontWeight": ""
-                },
-                "lineColor": "#dddddd",
-                "position": "bottom",
-                "type": "category",
-                "title": {
-                    "rotation": 0,
-                    "style": {
-                        "fontFamily": "Microsoft YaHei",
-                        "color": "#1a1a1a",
-                        "fontSize": "12px",
-                        "fontStyle": "",
-                        "fontWeight": ""
-                    },
-                    "text": ""
-                },
-                "labelRotation": 0,
-                "showLabel": true,
-                "reversed": false,
-                "maxWidth": "30%"
-            }],
-            "data": {
-                "s": [2.7787643E8],
-                "c": [{
-                    "s": [1.9485E7],
-                    "x": 1,
-                    "n": "长期协议"
-                }, {
-                    "s": [2.477942E7],
-                    "x": 1,
-                    "n": "长期协议订单"
-                }, {
-                    "s": [1.16658E7],
-                    "x": 1,
-                    "n": "服务协议"
-                }, {
-                    "s": [2.2194621E8],
-                    "x": 1,
-                    "n": "购买合同"
-                }],
-                "x": 5
+            "endAngle": 360,
+            "innerRadius": "0%",
+            "animation": true
+        },
+        "data": {
+            "s": [2.92817815E8],
+            "c": [{"s": [3.0795647E7], "x": 1, "n": "FX0101010201"}, {
+                "s": [2.4984935E7],
+                "x": 1,
+                "n": "FX0101010203"
+            }, {"s": [2.9408134E7], "x": 1, "n": "FX0101010204"}, {
+                "s": [4.7961836E7],
+                "x": 1,
+                "n": "FX0101010301"
+            }, {"s": [1.6358198E7], "x": 1, "n": "FX0101010501"}, {
+                "s": [3.540331E7],
+                "x": 1,
+                "n": "FX0101010502"
+            }, {"s": [4.5243042E7], "x": 1, "n": "FX0101010503"}, {
+                "s": [3.2418753E7],
+                "x": 1,
+                "n": "FX0101010601"
+            }, {"s": [2.8338736E7], "x": 1, "n": "FX0101010602"}, {"s": [1905224], "x": 1, "n": "FX0101010701"}],
+            "x": 11
+        },
+        "legend": {
+            "visible": true,
+            "maxHeight": "30%",
+            "style": {
+                "fontFamily": "Microsoft YaHei",
+                "color": "#1a1a1a",
+                "fontSize": "12px",
+                "fontStyle": "",
+                "fontWeight": ""
             },
-            "legend": {
-                "visible": true,
-                "maxHeight": "30%",
+            "position": "bottom",
+            "enabled": true,
+            "maxWidth": "30%"
+        },
+        "series": [{
+            "yAxis": 0,
+            "dimensionIDs": ["97e4892e46171529"],
+            "data": [{"x": "FX0101010201", "y": "30795647", "longDate": "FX0101010201"}, {
+                "x": "FX0101010203",
+                "y": "24984935",
+                "longDate": "FX0101010203"
+            }, {"x": "FX0101010204", "y": "29408134", "longDate": "FX0101010204"}, {
+                "x": "FX0101010301",
+                "y": "47961836",
+                "longDate": "FX0101010301"
+            }, {"x": "FX0101010501", "y": "16358198", "longDate": "FX0101010501"}, {
+                "x": "FX0101010502",
+                "y": "35403310",
+                "longDate": "FX0101010502"
+            }, {"x": "FX0101010503", "y": "45243042", "longDate": "FX0101010503"}, {
+                "x": "FX0101010601",
+                "y": "32418753",
+                "longDate": "FX0101010601"
+            }, {"x": "FX0101010602", "y": "28338736", "longDate": "FX0101010602"}, {
+                "x": "FX0101010701",
+                "y": "1905224",
+                "longDate": "FX0101010701"
+            }],
+            "targetIDs": ["ccbf6740fd90c41e"],
+            "name": "金额",
+            "tooltip": {
+                "formatter": {
+                    "identifier": "${SERIES}${CATEGORY}${VALUE}${PERCENT}${SERIES}",
+                    "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
+                    "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
+                    "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
+                },
+                "padding": 10,
+                "shared": false,
+                "backgroundColor": "#ffffff",
+                "borderRadius": 2,
+                "shadow": true,
+                "borderWidth": 0,
                 "style": {
                     "fontFamily": "Microsoft YaHei",
                     "color": "#1a1a1a",
@@ -236,105 +164,36 @@
                     "fontStyle": "",
                     "fontWeight": ""
                 },
-                "position": "bottom",
                 "enabled": true,
-                "maxWidth": "30%"
+                "animation": true
             },
-            "series": [{
-                "yAxis": 0,
-                "dimensionIDs": ["61dceaa81c9208b9"],
-                "data": [{
-                    "x": "长期协议",
-                    "y": "19485000",
-                    "longDate": ""
-                }, {
-                    "x": "长期协议订单",
-                    "y": "24779420",
-                    "longDate": ""
-                }, {
-                    "x": "服务协议",
-                    "y": "11665800",
-                    "longDate": ""
-                }, {
-                    "x": "购买合同",
-                    "y": "221946210",
-                    "longDate": ""
-                }],
-                "targetIDs": ["4d658d7166245dc2"],
-                "name": "合同金额",
-                "tooltip": {
-                    "formatter": {
-                        "identifier": "${CATEGORY}${SERIES}${VALUE}",
-                        "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
-                        "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
-                        "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
-                    },
-                    "padding": 10,
-                    "backgroundColor": "#ffffff",
-                    "borderRadius": 2,
-                    "shadow": true,
-                    "borderWidth": 0,
-                    "style": {
-                        "fontFamily": "Verdana",
-                        "color": "#1a1a1a",
-                        "fontSize": "14px"
-                    },
-                    "enabled": true,
-                    "animation": true
-                },
-                "type": "column"
-            }],
-            "chartType": "column",
-            "style": "normal",
-            "tools": {
-                "hidden": false,
-                "toImage": {
-                    "enabled": false
-                },
-                "refresh": {
-                    "enabled": false
-                },
-                "sort": {
-                    "enabled": false
-                },
-                "fullScreen": {
-                    "enabled": false
-                }
-            },
-            "dataSheet": {
-                "borderColor": "#dddddd",
-                "borderWidth": 1,
-                "style": {
-                    "fontFamily": "Microsoft YaHei",
-                    "color": "#1a1a1a",
-                    "fontSize": "12px",
-                    "fontStyle": "",
-                    "fontWeight": ""
-                },
-                "enabled": false
-            },
-            "colors": ["#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398",
-                "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc", "#5867c3", "#ff525e", "#ffa9cc",
-                "#ffaa00",
-                "#ffdb03", "#9ccc66", "#36c398", "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc",
-                "#5867c3",
-                "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398"
-            ]
-        };
+            "type": "pie"
+        }],
+        "chartType": "pie",
+        "style": "normal",
+        "tools": {
+            "hidden": false,
+            "toImage": {"enabled": false},
+            "refresh": {"enabled": false},
+            "sort": {"enabled": false},
+            "fullScreen": {"enabled": false}
+        },
+        "colors": ["#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"]
+    };
 
-        var wrapper = VanCharts.init(document.getElementById('wrapper'));
-        wrapper.setOptions(options);
+    var wrapper = VanCharts.init(document.getElementById('vessel'));
+    wrapper.setOptions(options);
 
-        setTimeout(function () {
-            html2canvas(document.getElementById('wrapper'), {
-                logging: true
-            }).then(function (canvas) {
-                // console.log(canvas.toDataURL());
-                document.getElementById('canvas').append(canvas)
-            })
-        }, 1000)
+    setTimeout(function () {
+        html2canvas(document.getElementById('wrapper'), {
+            logging: true
+        }).then(function (canvas) {
+            var imgData = canvas.toDataURL();
+            document.getElementById('canvas').src = imgData;
+        })
+    }, 1000)
 
-    </script>
+</script>
 </body>
 
 </html>

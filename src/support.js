@@ -45,9 +45,6 @@ Support.prototype.testSVG = function () {
     } catch (e) {
         return false;
     }
-    if (/firefox/i.test(navigator.userAgent.toLowerCase())) {
-        return false;
-    }
     return true;
 };
 

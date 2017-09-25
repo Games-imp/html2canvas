@@ -139,7 +139,8 @@ module.exports = function(grunt) {
                         'parser', 'gradient', 'pattern', 'shadow', 'freedrawing',
                         'image_filters', 'serialization', 'animation', 'interaction'].join(","), 'no-es5-compat', 'dest=' + path.resolve(__dirname, 'src/fabric/dist/') + '/']
                 },
-                src: ['src/fabric/build.js']
+                // src: ['src/fabric/build.js']
+                src: ['src/fabric-origin/build.js']
             }
         },
         uglify: {
