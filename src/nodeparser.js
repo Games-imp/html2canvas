@@ -22,6 +22,7 @@ function NodeParser(element, renderer, support, imageLoader, options) {
     this.stack = new StackingContext(true, 1, element.ownerDocument, null);
     var parent = new NodeContainer(element, null);
     if (options.background) {
+        //后面添加支持图片背景的功能
         renderer.rectangle(0, 0, renderer.width, renderer.height, new Color(options.background));
     }
     if (element === element.ownerDocument.documentElement) {

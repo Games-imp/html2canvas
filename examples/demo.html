@@ -184,18 +184,18 @@
     <script type="text/javascript" src="es6_promise.js"></script>
     <script type="text/javascript" src="../dist/html2canvas.js"></script>
     <script type="text/javascript">
-        var styleString = "#body {background :  green}";
-        var d = document,
-            styles = d.createElement('style');
-        d.getElementsByTagName('body')[0].appendChild(styles);
-        styles.setAttribute('type', 'text/css');
-        if (styles.styleSheet) {
-            styles.styleSheet.cssText = styleString;
-        } else {
-            styles.appendChild(document.createTextNode(styleString));
-        }
+//        var styleString = "#body {background :  green}";
+//        var d = document,
+//            styles = d.createElement('style');
+//        d.getElementsByTagName('body')[0].appendChild(styles);
+//        styles.setAttribute('type', 'text/css');
+//        if (styles.styleSheet) {
+//            styles.styleSheet.cssText = styleString;
+//        } else {
+//            styles.appendChild(document.createTextNode(styleString));
+//        }
 
-        
+
 
         html2canvas(document.getElementById('body'), {
             logging: true,

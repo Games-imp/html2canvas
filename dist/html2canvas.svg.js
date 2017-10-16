@@ -2747,6 +2747,9 @@ fabric.CommonMethods = {
         else {
           delete options.width;
           delete options.height;
+          //ie left top
+          delete options.left;
+          delete options.top;
         }
       }
       object = new fabric.Group(elements, options);
@@ -17278,7 +17281,7 @@ fabric.util.object.extend(fabric.Object.prototype, /** @lends fabric.Object.prot
   /**
    * @private
    */
-  function isValidRadius(attributes) {
+  function  isValidRadius(attributes) {
     return (('radius' in attributes) && (attributes.radius >= 0));
   }
   /* _FROM_SVG_END_ */

@@ -944,7 +944,10 @@ function html2canvas(nodeList, options) {
         log.options.logging = true;
         log.options.start = Date.now();
     }
-
+    //后面添加支持图片背景的background，目前支持颜色
+    options.background = typeof(options.background) === "undefined" ? null : options.background;
+    options.canvas = typeof(options.canvas) === "undefined" ? null : options.canvas;
+    options.useCORS = typeof(options.useCORS) === "undefined" ? true : options.useCORS;
     options.async = typeof(options.async) === "undefined" ? true : options.async;
     options.allowTaint = typeof(options.allowTaint) === "undefined" ? false : options.allowTaint;
     options.removeContainer = typeof(options.removeContainer) === "undefined" ? true : options.removeContainer;
@@ -1012,8 +1015,11 @@ function renderWindow(node, container, options, windowWidth, windowHeight) {
     var support = new Support(clonedWindow.document);
     var imageLoader = new ImageLoader(options, support);
     var bounds = getBounds(node);
-    var width = options.type === "view" ? windowWidth : documentWidth(clonedWindow.document);
-    var height = options.type === "view" ? windowHeight : documentHeight(clonedWindow.document);
+    // var width = options.type === "view" ? windowWidth : documentWidth(clonedWindow.document);
+    // var height = options.type === "view" ? windowHeight : documentHeight(clonedWindow.document);
+    //解决 canvas只画了看见的部分的问题
+    var width = options.type === "view" ? windowWidth : bounds.right + 1;
+    var height = options.type === "view" ? windowHeight : bounds.bottom + 1;
     var renderer = new options.renderer(width, height, imageLoader, options, document);
     var parser = new NodeParser(node, renderer, support, imageLoader, options);
     return parser.ready.then(function() {
@@ -1023,7 +1029,9 @@ function renderWindow(node, container, options, windowWidth, windowHeight) {
         if (options.type === "view") {
             canvas = crop(renderer.canvas, {width: renderer.canvas.width, height: renderer.canvas.height, top: 0, left: 0, x: 0, y: 0});
         } else if (node === clonedWindow.document.body || node === clonedWindow.document.documentElement || options.canvas != null) {
-            canvas = renderer.canvas;
+            //由于节点的left和top，节点渲染的canvas并不能在传进来的canvas里按照left:0，top:0渲染
+            canvas = crop(renderer.canvas, {width: renderer.canvas.width - options.cropLeft, height: renderer.canvas.height - options.cropTop,
+                top: options.cropTop, left: options.cropLeft, x: 0, y: 0});
         } else {
             canvas = crop(renderer.canvas, {width:  options.width != null ? options.width : bounds.width, height: options.height != null ? options.height : bounds.height, top: bounds.top, left: bounds.left, x: 0, y: 0});
         }
@@ -1278,7 +1286,7 @@ function ImageLoader(options, support) {
     this.origin = this.getOrigin(window.location.href);
 }
 
-ImageLoader.prototype.findImages = function(nodes) {
+ImageLoader.prototype.findImages = function (nodes) {
     var images = [];
     nodes.reduce(function(imageNodes, container) {
         switch(container.node.nodeName) {
@@ -1299,14 +1307,14 @@ ImageLoader.prototype.findImages = function(nodes) {
     return images;
 };
 
-ImageLoader.prototype.findBackgroundImage = function(images, container) {
+ImageLoader.prototype.findBackgroundImage = function (images, container) {
     container.parseBackgroundImages().filter(this.hasImageBackground).forEach(this.addImage(images, this.loadImage), this);
     return images;
 };
 
-ImageLoader.prototype.addImage = function(images, callback) {
-    return function(newImage) {
-        newImage.args.forEach(function(image) {
+ImageLoader.prototype.addImage = function (images, callback) {
+    return function (newImage) {
+        newImage.args.forEach(function (image) {
             if (!this.imageExists(images, image)) {
                 images.splice(0, 0, callback.call(this, newImage));
                 log('Added image #' + (images.length), typeof(image) === "string" ? image.substring(0, 100) : image);
@@ -1315,11 +1323,11 @@ ImageLoader.prototype.addImage = function(images, callback) {
     };
 };
 
-ImageLoader.prototype.hasImageBackground = function(imageData) {
+ImageLoader.prototype.hasImageBackground = function (imageData) {
     return imageData.method !== "none";
 };
 
-ImageLoader.prototype.loadImage = function(imageData) {
+ImageLoader.prototype.loadImage = function (imageData) {
     if (imageData.method === "url") {
         var src = imageData.args[0];
         if (this.isSVG(src) && !this.support.svg && !this.options.allowTaint) {
@@ -1348,50 +1356,50 @@ ImageLoader.prototype.loadImage = function(imageData) {
     }
 };
 
-ImageLoader.prototype.isSVG = function(src) {
+ImageLoader.prototype.isSVG = function (src) {
     return src.substring(src.length - 3).toLowerCase() === "svg" || SVGContainer.prototype.isInline(src);
 };
 
-ImageLoader.prototype.imageExists = function(images, src) {
-    return images.some(function(image) {
+ImageLoader.prototype.imageExists = function (images, src) {
+    return images.some(function (image) {
         return image.src === src;
     });
 };
 
-ImageLoader.prototype.isSameOrigin = function(url) {
+ImageLoader.prototype.isSameOrigin = function (url) {
     return (this.getOrigin(url) === this.origin);
 };
 
-ImageLoader.prototype.getOrigin = function(url) {
+ImageLoader.prototype.getOrigin = function (url) {
     var link = this.link || (this.link = document.createElement("a"));
     link.href = url;
     link.href = link.href; // IE9, LOL! - http://jsfiddle.net/niklasvh/2e48b/
     return link.protocol + link.hostname + link.port;
 };
 
-ImageLoader.prototype.getPromise = function(container) {
-    return this.timeout(container, this.options.imageTimeout)['catch'](function() {
+ImageLoader.prototype.getPromise = function (container) {
+    return this.timeout(container, this.options.imageTimeout)['catch'](function () {
         var dummy = new DummyImageContainer(container.src);
-        return dummy.promise.then(function(image) {
+        return dummy.promise.then(function (image) {
             container.image = image;
         });
     });
 };
 
-ImageLoader.prototype.get = function(src) {
+ImageLoader.prototype.get = function (src) {
     var found = null;
-    return this.images.some(function(img) {
+    return this.images.some(function (img) {
         return (found = img).src === src;
     }) ? found : null;
 };
 
-ImageLoader.prototype.fetch = function(nodes) {
+ImageLoader.prototype.fetch = function (nodes) {
     this.images = nodes.reduce(bind(this.findBackgroundImage, this), this.findImages(nodes));
-    this.images.forEach(function(image, index) {
-        image.promise.then(function() {
-            log("Succesfully loaded image #"+ (index+1), image);
-        }, function(e) {
-            log("Failed loading image #"+ (index+1), image, e);
+    this.images.forEach(function (image, index) {
+        image.promise.then(function () {
+            log("Succesfully loaded image #" + (index + 1), image);
+        }, function (e) {
+            log("Failed loading image #" + (index + 1), image, e);
         });
     });
     this.ready = Promise.all(this.images.map(this.getPromise, this));
@@ -1399,18 +1407,18 @@ ImageLoader.prototype.fetch = function(nodes) {
     return this;
 };
 
-ImageLoader.prototype.timeout = function(container, timeout) {
+ImageLoader.prototype.timeout = function (container, timeout) {
     var timer;
-    var promise = Promise.race([container.promise, new Promise(function(res, reject) {
-        timer = setTimeout(function() {
+    var promise = Promise.race([container.promise, new Promise(function (res, reject) {
+        timer = setTimeout(function () {
             log("Timed out loading image", container);
             reject(container);
         }, timeout);
-    })]).then(function(container) {
+    })]).then(function (container) {
         clearTimeout(timer);
         return container;
     });
-    promise['catch'](function() {
+    promise['catch'](function () {
         clearTimeout(timer);
     });
     return promise;
@@ -1855,6 +1863,7 @@ function NodeParser(element, renderer, support, imageLoader, options) {
     this.stack = new StackingContext(true, 1, element.ownerDocument, null);
     var parent = new NodeContainer(element, null);
     if (options.background) {
+        //后面添加支持图片背景的功能
         renderer.rectangle(0, 0, renderer.width, renderer.height, new Color(options.background));
     }
     if (element === element.ownerDocument.documentElement) {

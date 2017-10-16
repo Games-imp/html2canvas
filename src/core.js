@@ -19,7 +19,10 @@ function html2canvas(nodeList, options) {
         log.options.logging = true;
         log.options.start = Date.now();
     }
-
+    //后面添加支持图片背景的background，目前支持颜色
+    options.background = typeof(options.background) === "undefined" ? null : options.background;
+    options.canvas = typeof(options.canvas) === "undefined" ? null : options.canvas;
+    options.useCORS = typeof(options.useCORS) === "undefined" ? true : options.useCORS;
     options.async = typeof(options.async) === "undefined" ? true : options.async;
     options.allowTaint = typeof(options.allowTaint) === "undefined" ? false : options.allowTaint;
     options.removeContainer = typeof(options.removeContainer) === "undefined" ? true : options.removeContainer;
@@ -87,8 +90,11 @@ function renderWindow(node, container, options, windowWidth, windowHeight) {
     var support = new Support(clonedWindow.document);
     var imageLoader = new ImageLoader(options, support);
     var bounds = getBounds(node);
-    var width = options.type === "view" ? windowWidth : documentWidth(clonedWindow.document);
-    var height = options.type === "view" ? windowHeight : documentHeight(clonedWindow.document);
+    // var width = options.type === "view" ? windowWidth : documentWidth(clonedWindow.document);
+    // var height = options.type === "view" ? windowHeight : documentHeight(clonedWindow.document);
+    //解决 canvas只画了看见的部分的问题
+    var width = options.type === "view" ? windowWidth : bounds.right + 1;
+    var height = options.type === "view" ? windowHeight : bounds.bottom + 1;
     var renderer = new options.renderer(width, height, imageLoader, options, document);
     var parser = new NodeParser(node, renderer, support, imageLoader, options);
     return parser.ready.then(function() {
@@ -98,7 +104,9 @@ function renderWindow(node, container, options, windowWidth, windowHeight) {
         if (options.type === "view") {
             canvas = crop(renderer.canvas, {width: renderer.canvas.width, height: renderer.canvas.height, top: 0, left: 0, x: 0, y: 0});
         } else if (node === clonedWindow.document.body || node === clonedWindow.document.documentElement || options.canvas != null) {
-            canvas = renderer.canvas;
+            //由于节点的left和top，节点渲染的canvas并不能在传进来的canvas里按照left:0，top:0渲染
+            canvas = crop(renderer.canvas, {width: renderer.canvas.width - options.cropLeft, height: renderer.canvas.height - options.cropTop,
+                top: options.cropTop, left: options.cropLeft, x: 0, y: 0});
         } else {
             canvas = crop(renderer.canvas, {width:  options.width != null ? options.width : bounds.width, height: options.height != null ? options.height : bounds.height, top: bounds.top, left: bounds.left, x: 0, y: 0});
         }
