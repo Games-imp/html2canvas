@@ -4562,7 +4562,8 @@ if (typeof console !== 'undefined') {
         'image', 'text', 'linearGradient', 'radialGradient', 'stop', 'tspan'],
       svgViewBoxElements = ['symbol', 'image', 'marker', 'pattern', 'view', 'svg'],
       svgInvalidAncestors = ['pattern', 'defs', 'symbol', 'metadata', 'clipPath', 'mask', 'desc'],
-      svgValidParents = ['symbol', 'g', 'a'],//BI-9820 多了个svg
+      svgValidParents = ['symbol', 'g', 'a'],//BI-9820 多了个svg ie9 bug
+      tspanValidParents = svgValidParents.concat('text'),
 
       attributesMap = {
         cx:                   'left',
@@ -4600,6 +4601,7 @@ if (typeof console !== 'undefined') {
   fabric.svgViewBoxElementsRegEx = getSvgRegex(svgViewBoxElements);
   fabric.svgInvalidAncestorsRegEx = getSvgRegex(svgInvalidAncestors);
   fabric.svgValidParentsRegEx = getSvgRegex(svgValidParents);
+  fabric.tspanValidParentsRegEx = getSvgRegex(tspanValidParents);
 
   fabric.cssRules = { };
   fabric.gradientDefs = { };
@@ -5331,7 +5333,7 @@ if (typeof console !== 'undefined') {
       // if there's a parent container (`g` or `a` or `symbol` node), parse its attributes recursively upwards
       if (element.parentNode && fabric.svgValidParentsRegEx.test(element.parentNode.nodeName)) {
         parentAttributes = fabric.parseAttributes(element.parentNode, attributes, svgUid);
-      } else if(element.nodeName === 'tspan' && element.parentNode.parentNode && fabric.svgValidParentsRegEx.test(element.parentNode.parentNode.nodeName)) {
+      } else if(element.nodeName === 'tspan' && element.parentNode && fabric.tspanValidParentsRegEx.test(element.parentNode.nodeName)) {
         //tspan的特殊处理 tspan的父节点是text，不渲染text的同时，需要根据text的父节点g确定tspan的位置
         parentAttributes = fabric.parseAttributes(element.parentNode.parentNode, attributes, svgUid)
       }
