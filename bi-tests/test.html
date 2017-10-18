@@ -9,375 +9,107 @@
     <!-- <script type='text/javascript' src='http://192.168.1.115:8075/WebReport/ReportServer?op=emb&resource=third.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script> -->
     <!-- <script type='text/javascript' src='http://192.168.1.115:8075/WebReport/ReportServer?op=emb&resource=base.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script> -->
     <!-- <script type='text/javascript' src='http://192.168.1.115:8075/WebReport/ReportServer?op=emb&resource=export.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script> -->
-    <script type='text/javascript' src='./vancharts-all.js'></script>
+    <script type='text/javascript' src='vancharts-all.js'></script>
+    <script type='text/javascript' src='jquery.js'></script>
     <script type='text/javascript' src='../examples/es6_promise.js'></script>
     <script type='text/javascript' src='../dist/html2canvas.js'></script>
     <script type='text/javascript' src='../dist/html2canvas.svg.js'></script>
-    <style>
-        #wrapper {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-        }
-
-        #canvas {
-            position: absolute;
-            top: 500px;
-            width: 500px;
-            height: 500px;
-            /* border: 1.5px solid red; */
-            /* background-color: blue; */
-        }
-
-    </style>
+    <script type='text/javascript' src='config.js'></script>
+    <link rel='stylesheet' href='test.css' type='text/css'/>
 </head>
 
 <body>
-<!-- <img id='img'> -->
-<div id='wrapper' style='position: absolute'>
-    <!--<div>123</div>-->
-    <div id="vessel" style='position: absolute; width: 500px; height: 500px'></div>
-</div>
-<img id="canvas">
-<!-- <svg xmlns="http://www.w3.org/2000/svg" width="500" height="40" viewBox="0 0 500 40"> -->
-<!-- <text y="10.2" x="0" style="opacity: 1; font-family: 'Microsoft YaHei'; color: rgb(26, 26, 26); font-size: 0.75rem; fill: rgb(26, 26, 26);">500000</text> -->
-<!-- <text x="0" y="35" font-family="Verdana" font-size="35">
-    Hello, out there
-</text>
-</svg> -->
-</div>
-<!-- <svg id='svg' width='590' height='500'>
-    <circle cx="100" cy="50" r="40" stroke="black" stroke-width="2" fill="red"></circle>
-</svg> -->
-<!-- <svg id = 'svg' aria-hidden="true" class="octicon octicon-mark-github" height="32" version="1.1" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>  -->
-<script>
-    var BI = {};
-    BI.contentFormat = function () {
-        return 123;
-    };
-    var options = {
-        "plotOptions": {
-            "dataLabels": {
-                "formatter": {
-                    "identifier": "${VALUE}"
-                },
-                "connectorWidth": 0,
-                "autoAdjust": false,
-                "style": {
-                    "fontFamily": "Microsoft YaHei",
-                    "color": "#1a1a1a",
-                    "fontSize": "12px",
-                    "fontStyle": "",
-                    "fontWeight": ""
-                },
-                "align": "center",
-                "enabled": true
-            },
-            "connectNulls": true,
-            "large": false,
-            "shadow": false,
-            "sizeBy": "width",
-            "borderWidth": 0,
-            "marker": {
-                "symbol": "square",
-                "enabled": true
-            },
-            "tooltip": {
-                "padding": 10,
-                "shared": false,
-                "backgroundColor": "#ffffff",
-                "borderRadius": 2,
-                "shadow": true,
-                "borderWidth": 0,
-                "style": {
-                    "fontFamily": "Verdana",
-                    "color": "#1a1a1a",
-                    "fontSize": "14px"
-                },
-                "enabled": true,
-                "animation": true
-            },
-            "minSize": 12,
-            "maxSize": 40,
-            "inverted": false,
-            "animation": true
-        },
-        "yAxis": {},
-        "xAxis": {},
-        "data": {
-            "s": [
-                151
-            ],
-            "c": [
-                {
-                    "s": [
-                        16
-                    ],
-                    "x": 1,
-                    "n": "01"
-                },
-                {
-                    "s": [
-                        15
-                    ],
-                    "x": 1,
-                    "n": "0101"
-                },
-                {
-                    "s": [
-                        11
-                    ],
-                    "x": 1,
-                    "n": "010101"
-                },
-                {
-                    "s": [
-                        11
-                    ],
-                    "x": 1,
-                    "n": "010102"
-                },
-                {
-                    "s": [
-                        11
-                    ],
-                    "x": 1,
-                    "n": "0102"
-                },
-                {
-                    "s": [
-                        11
-                    ],
-                    "x": 1,
-                    "n": "0103"
-                },
-                {
-                    "s": [
-                        19
-                    ],
-                    "x": 1,
-                    "n": "2011"
-                },
-                {
-                    "s": [
-                        19
-                    ],
-                    "x": 1,
-                    "n": "2011.01"
-                },
-                {
-                    "s": [
-                        19
-                    ],
-                    "x": 1,
-                    "n": "2011.01.001"
-                },
-                {
-                    "s": [
-                        19
-                    ],
-                    "x": 1,
-                    "n": "2011.01.002"
-                }
-            ],
-            "x": 11
-        },
-        "legend": {
-            "visible": true,
-            "maxHeight": "30%",
-            "style": {
-                "fontFamily": "Microsoft YaHei",
-                "color": "#1a1a1a",
-                "fontSize": "12px",
-                "fontStyle": "",
-                "fontWeight": ""
-            },
-            "position": "bottom",
-            "enabled": true,
-            "maxWidth": "30%"
-        },
-        "series": [
-            {
-                "dataLabels": {
-                    "formatter": {
-                        "identifier": "${VALUE}",
-                        "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
-                        "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
-                        "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
-                    },
-                    "connectorWidth": 0,
-                    "autoAdjust": false,
-                    "style": {
-                        "fontFamily": "Microsoft YaHei",
-                        "color": "#1a1a1a",
-                        "fontSize": "12px",
-                        "fontStyle": "",
-                        "fontWeight": ""
-                    },
-                    "align": "center",
-                    "enabled": true
-                },
-                "yAxis": 0,
-                "dimensionIDs": [
-                    "f0a2c22c262c8304"
-                ],
-                "data": [
-                    {
-                        "x": "01",
-                        "y": "16",
-                        "longDate": "01"
-                    },
-                    {
-                        "x": "0101",
-                        "y": "15",
-                        "longDate": "0101"
-                    },
-                    {
-                        "x": "010101",
-                        "y": "11",
-                        "longDate": "010101"
-                    },
-                    {
-                        "x": "010102",
-                        "y": "11",
-                        "longDate": "010102"
-                    },
-                    {
-                        "x": "0102",
-                        "y": "11",
-                        "longDate": "0102"
-                    },
-                    {
-                        "x": "0103",
-                        "y": "11",
-                        "longDate": "0103"
-                    },
-                    {
-                        "x": "2011",
-                        "y": "19",
-                        "longDate": "2011"
-                    },
-                    {
-                        "x": "2011.01",
-                        "y": "19",
-                        "longDate": "2011.01"
-                    },
-                    {
-                        "x": "2011.01.001",
-                        "y": "19",
-                        "longDate": "2011.01.001"
-                    },
-                    {
-                        "x": "2011.01.002",
-                        "y": "19",
-                        "longDate": "2011.01.002"
-                    }
-                ],
-                "targetIDs": [
-                    "0ca252249e64326a"
-                ],
-                "name": "厂家维度表记录数",
-                "tooltip": {
-                    "formatter": {
-                        "identifier": "${CATEGORY}${SERIES}${VALUE}",
-                        "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
-                        "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
-                        "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
-                    },
-                    "padding": 10,
-                    "shared": false,
-                    "backgroundColor": "#ffffff",
-                    "borderRadius": 2,
-                    "shadow": true,
-                    "borderWidth": 0,
-                    "style": {
-                        "fontFamily": "Verdana",
-                        "color": "#1a1a1a",
-                        "fontSize": "14px"
-                    },
-                    "enabled": true,
-                    "animation": true
-                },
-                "type": "forceBubble"
-            }
-        ],
-        "chartType": "forceBubble",
-        "style": "normal",
-        "tools": {
-            "hidden": false,
-            "toImage": {
-                "enabled": false
-            },
-            "refresh": {
-                "enabled": false
-            },
-            "sort": {
-                "enabled": false
-            },
-            "fullScreen": {
-                "enabled": false
-            }
-        },
-        "dataSheet": {
-            "borderColor": "#dddddd",
-            "borderWidth": 1,
-            "style": {
-                "fontFamily": "Microsoft YaHei",
-                "color": "#1a1a1a",
-                "fontSize": "12px",
-                "fontStyle": "",
-                "fontWeight": ""
-            },
-            "enabled": false
-        },
-        "colors": [
-            "#00c5dc",
-            "#5867c3",
-            "#ff525e",
-            "#ffa9cc",
-            "#ffaa00",
-            "#ffdb03",
-            "#9ccc66",
-            "#36c398",
-            "#00a7af",
-            "#2281bc",
-            "#766aef",
-            "#c576d3",
-            "#00c5dc",
-            "#5867c3",
-            "#ff525e",
-            "#ffa9cc",
-            "#ffaa00",
-            "#ffdb03",
-            "#9ccc66",
-            "#36c398",
-            "#00a7af",
-            "#2281bc",
-            "#766aef",
-            "#c576d3",
-            "#00c5dc",
-            "#5867c3",
-            "#ff525e",
-            "#ffa9cc",
-            "#ffaa00",
-            "#ffdb03",
-            "#9ccc66",
-            "#36c398"
-        ]
-    };
 
-    var wrapper = VanCharts.init(document.getElementById('vessel'));
+<div class="demo">
+    <div class="float">
+        <div id='image_wrapper' style="overflow: hidden">
+            <img id='wrapper' src='test.jpg'>
+        </div>
+        <div>
+            <img id='image_canvas'>
+        </div>
+        <div>
+            <div id="vessel" style='position: absolute; width: 800px; height: 500px'></div>
+        </div>
+        <div>
+            <img id='img_canvas'>
+        </div>
+        <div>
+            <textarea id="holder" style="width: 700px; height: 400px; margin-top: 50px;"></textarea>
+        </div>
+        <div>
+            <img id='textarea_canvas' style="margin-top: 50px">
+        </div>
+        <div>
+            <iframe id="container" style='width: 700px; height: 400px; margin-top: 50px;'></iframe>
+        </div>
+        <div>
+            <img id='iframe_canvas' style="margin-top: 50px">
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var vessel = document.getElementById('vessel');
+    var wrapper = VanCharts.init(vessel);
     wrapper.setOptions(options);
 
-    window.onload = function () {
+    var textArea = $('#holder');
+    var value = '123-zhang-张-AstronautOO8123-zhang-张-AstronautOO8123-zhang-张-AstronautOO8123-zhang-张-AstronautOO8123-zhang-张-AstronautOO8123-zhang-张-AstronautOO8';
+    textArea.val(value);
+
+    var container = document.querySelector('#container');
+
+    //    container.src = "https://www.baidu.com";
+
+    function renderImage() {
+        html2canvas(document.querySelector('#image_wrapper'), {
+            logging: true,
+            useCORS: true
+        }).then(function (canvas) {
+            var imgData = canvas.toDataURL();
+            document.getElementById('image_canvas').src = imgData;
+        })
+    }
+
+    function renderChart() {
+
         setTimeout(function () {
-            html2canvas(document.getElementById('vessel'), {
+            html2canvas(vessel, {
                 logging: true
             }).then(function (canvas) {
                 var imgData = canvas.toDataURL();
-                document.getElementById('canvas').src = imgData;
+                document.getElementById('img_canvas').src = imgData;
             })
         }, 2000)
+    }
+
+    function renderTextArea() {
+        html2canvas(textArea, {
+            logging: true
+        }).then(function (canvas) {
+            var imgData = canvas.toDataURL();
+            document.getElementById('textarea_canvas').src = imgData;
+        })
+
+    }
+
+    function renderIframe() {
+
+        html2canvas(container, {
+            useCORS: true,
+            logging: true
+        }).then(function (canvas) {
+            var imgData = canvas.toDataURL();
+            document.getElementById('iframe_canvas').src = imgData;
+        })
+    }
+
+    window.onload = function () {
+        renderImage();
+//        renderChart();
+//        renderTextArea();
+//        renderIframe();
     };
 
 </script>
