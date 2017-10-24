@@ -16,23 +16,43 @@
     <script type='text/javascript' src='../dist/html2canvas.svg.js'></script>
     <script type='text/javascript' src='config.js'></script>
     <link rel='stylesheet' href='test.css' type='text/css'/>
+    <link rel="stylesheet" href='mapCss/leaflet.css' type="text/css">
 </head>
 
 <body>
 
 <div class="demo">
     <div class="float">
-        <div id='image_wrapper' style="overflow: hidden">
+        <div>
+            <button id="btn" style='position: absolute; top: 50px; left: 650px; z-index: 1000;'>html2canvas</button>
+            <div id="vessel" style='position: relative; width: 800px; height: 500px'></div>
+        </div>
+        <div>
+            <img id='img_canvas'>
+        </div>
+        <div id='path_wrapper'>
+            <svg id = 'path' width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,30A30,30 0 1,1 0,-30A30,30 0 1,1 0,30Z" transform="translate(30,30)"
+                      style="stroke: rgb(29, 214, 223); stroke-opacity: 0; stroke-width: 0; fill: rgb(45, 192, 206); fill-opacity: 0.7; filter: url(&quot;#vancharts87&quot;);"></path>
+                <defs>
+                    <filter id="vancharts87" x="-50%" y="-50%" width="200%" height="200%">
+                        <feOffset in="SourceGraphic" dx="0" dy="0" result="offOut"></feOffset>
+                        <feColorMatrix in="offOut" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"
+                                       result="matrixOut"></feColorMatrix>
+                        <feGaussianBlur in="matrixOut" stdDeviation="2" result="blurOut"></feGaussianBlur>
+                        <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>
+                    </filter>
+                </defs>
+            </svg>
+        </div>
+        <div>
+            <img id='path_canvas'>
+        </div>
+        <div id='image_wrapper' style="overflow: inherit">
             <img id='wrapper' src='test.jpg'>
         </div>
         <div>
             <img id='image_canvas'>
-        </div>
-        <div>
-            <div id="vessel" style='position: absolute; width: 800px; height: 500px'></div>
-        </div>
-        <div>
-            <img id='img_canvas'>
         </div>
         <div>
             <textarea id="holder" style="width: 700px; height: 400px; margin-top: 50px;"></textarea>
@@ -52,7 +72,9 @@
 <script type="text/javascript">
     var vessel = document.getElementById('vessel');
     var wrapper = VanCharts.init(vessel);
-    wrapper.setOptions(options);
+    wrapper.setOptions(bubbleMapOptions);
+//    wrapper.setOptions(dotMapOptions);
+//    wrapper.setOptions(areaMapOptions);
 
     var textArea = $('#holder');
     var value = '123-zhang-张-AstronautOO8123-zhang-张-AstronautOO8123-zhang-张-AstronautOO8123-zhang-张-AstronautOO8123-zhang-张-AstronautOO8123-zhang-张-AstronautOO8';
@@ -60,7 +82,21 @@
 
     var container = document.querySelector('#container');
 
+    document.querySelector('#btn').onclick = function () {
+        renderChart()
+    };
+
     //    container.src = "https://www.baidu.com";
+
+    function renderPath() {
+        html2canvas(document.querySelector('#path'), {
+            logging: true,
+            useCORS: true
+        }).then(function (canvas) {
+            var imgData = canvas.toDataURL();
+            document.getElementById('path_canvas').src = imgData;
+        })
+    }
 
     function renderImage() {
         html2canvas(document.querySelector('#image_wrapper'), {
@@ -76,17 +112,20 @@
 
         setTimeout(function () {
             html2canvas(vessel, {
+                useCORS: true,
+                foreignObjectRendering: false,
                 logging: true
             }).then(function (canvas) {
                 var imgData = canvas.toDataURL();
                 document.getElementById('img_canvas').src = imgData;
             })
-        }, 2000)
+        }, 500)
     }
 
     function renderTextArea() {
         html2canvas(textArea, {
-            logging: true
+            logging: true,
+            type: 'view'
         }).then(function (canvas) {
             var imgData = canvas.toDataURL();
             document.getElementById('textarea_canvas').src = imgData;
@@ -106,8 +145,9 @@
     }
 
     window.onload = function () {
-        renderImage();
-//        renderChart();
+//        renderImage();
+        renderChart();
+        renderPath();
 //        renderTextArea();
 //        renderIframe();
     };

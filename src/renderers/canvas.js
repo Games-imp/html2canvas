@@ -67,11 +67,23 @@ CanvasRenderer.prototype.drawImage = function (imageContainer, sx, sy, sw, sh, d
     }
 };
 
-CanvasRenderer.prototype.clip = function (shapes, callback, context) {
+CanvasRenderer.prototype.clip = function (shapes, callback, context, container) {
     this.ctx.save();
-    shapes.filter(hasEntries).forEach(function (shape) {
-        this.shape(shape).clip();
-    }, this);
+    // shapes.filter(hasEntries).forEach(function (shape) {
+    //     this.shape(shape).clip();
+    // }, this);
+    if (container && container.hasTransform()) {
+        this.setTransform(container.inverseTransform());
+        shapes.slice(0, 1).filter(hasEntries).forEach(function (shape) {
+            this.shape(shape).clip();
+        }, this);
+        this.setTransform(container.parseTransform());
+    } else {
+        shapes.filter(hasEntries).forEach(function (shape) {
+            this.shape(shape).clip();
+
+        }, this);
+    }
     callback.call(context);
     this.ctx.restore();
 };

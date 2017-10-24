@@ -2,14 +2,18 @@ var BI = {};
 BI.contentFormat = function () {
     return 123;
 };
-var options = {
+var bubbleMapOptions = {
     "plotOptions": {
-        "dataLabels": {
-            "formatter": {
-                "identifier": "${VALUE}"
-            },
-            "connectorWidth": 0,
-            "autoAdjust": false,
+        "dataLabels": {"autoAdjust": true, "enabled": false},
+        "borderWidth": 1,
+        "tooltip": {
+            "formatter": {"identifier": "${VALUE}${NAME}${SERIES}"},
+            "padding": 10,
+            "shared": true,
+            "backgroundColor": "#ffffff",
+            "borderRadius": 2,
+            "shadow": true,
+            "borderWidth": 0,
             "style": {
                 "fontFamily": "Microsoft YaHei",
                 "color": "#1a1a1a",
@@ -17,121 +21,63 @@ var options = {
                 "fontStyle": "",
                 "fontWeight": ""
             },
-            "align": "center",
-            "enabled": true
+            "enabled": true,
+            "animation": true
         },
-        "connectNulls": true,
-        "large": false,
-        "shadow": false,
-        "sizeBy": "width",
-        "borderWidth": 0,
-        "marker": {
-            "symbol": "square",
-            "enabled": true
-        },
+        "animation": true
+    },
+    "geo": {
+        "data": "./mapData/china.json",
+        "tileLayer": "",
+        "name": "中国(省级)",
+        "zoom": true
+    },
+    "series": [{
+        "dimensionIDs": ["27f16cbe848cc541"],
+        "data": [{"size": "83", "name": "安徽省"}, {
+            "size": "69",
+            "name": "福建省"
+        }, {"size": "81", "name": "甘肃省"}, {"size": "89", "name": "广东省"}, {
+            "size": "93",
+            "name": "广西壮族自治区"
+        }, {"size": "80", "name": "贵州省"}, {"size": "152", "name": "河北省"}, {
+            "size": "128",
+            "name": "河南省"
+        }, {"size": "78", "name": "黑龙江省"}, {"size": "101", "name": "湖南省"}],
+        "targetIDs": ["e8b2690ddf38c303"],
+        "name": "城市地区维度表记录数",
         "tooltip": {
+            "formatter": {
+                "identifier": "${VALUE}${NAME}${SERIES}",
+                "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
+                "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
+                "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
+            },
             "padding": 10,
-            "shared": false,
+            "shared": true,
             "backgroundColor": "#ffffff",
             "borderRadius": 2,
             "shadow": true,
             "borderWidth": 0,
             "style": {
-                "fontFamily": "Verdana",
+                "fontFamily": "Microsoft YaHei",
                 "color": "#1a1a1a",
-                "fontSize": "14px"
+                "fontSize": "12px",
+                "fontStyle": "",
+                "fontWeight": ""
             },
             "enabled": true,
             "animation": true
         },
-        "minSize": 12,
-        "maxSize": 40,
-        "inverted": false,
-        "animation": true
-    },
-    "yAxis": {},
-    "xAxis": {},
-    "data": {
-        "s": [
-            151
-        ],
-        "c": [
-            {
-                "s": [
-                    16
-                ],
-                "x": 1,
-                "n": "01"
-            },
-            {
-                "s": [
-                    15
-                ],
-                "x": 1,
-                "n": "0101"
-            },
-            {
-                "s": [
-                    11
-                ],
-                "x": 1,
-                "n": "010101"
-            },
-            {
-                "s": [
-                    11
-                ],
-                "x": 1,
-                "n": "010102"
-            },
-            {
-                "s": [
-                    11
-                ],
-                "x": 1,
-                "n": "0102"
-            },
-            {
-                "s": [
-                    11
-                ],
-                "x": 1,
-                "n": "0103"
-            },
-            {
-                "s": [
-                    19
-                ],
-                "x": 1,
-                "n": "2011"
-            },
-            {
-                "s": [
-                    19
-                ],
-                "x": 1,
-                "n": "2011.01"
-            },
-            {
-                "s": [
-                    19
-                ],
-                "x": 1,
-                "n": "2011.01.001"
-            },
-            {
-                "s": [
-                    19
-                ],
-                "x": 1,
-                "n": "2011.01.002"
-            }
-        ],
-        "x": 11
-    },
-    "legend": {
+        "type": "bubble"
+    }],
+    "chartType": "areaMap",
+    "style": "normal",
+    "rangeLegend": {
         "visible": true,
         "maxHeight": "30%",
+        "continuous": false,
+        "range": {"color": "#04b1c2"},
         "style": {
             "fontFamily": "Microsoft YaHei",
             "color": "#1a1a1a",
@@ -139,135 +85,105 @@ var options = {
             "fontStyle": "",
             "fontWeight": ""
         },
-        "position": "bottom",
+        "position": "right-bottom",
         "enabled": true,
         "maxWidth": "30%"
     },
-    "series": [
-        {
-            "dataLabels": {
-                "formatter": {
-                    "identifier": "${VALUE}",
-                    "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
-                    "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
-                    "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
-                },
-                "connectorWidth": 0,
-                "autoAdjust": false,
-                "style": {
-                    "fontFamily": "Microsoft YaHei",
-                    "color": "#1a1a1a",
-                    "fontSize": "12px",
-                    "fontStyle": "",
-                    "fontWeight": ""
-                },
-                "align": "center",
-                "enabled": true
-            },
-            "yAxis": 0,
-            "dimensionIDs": [
-                "f0a2c22c262c8304"
-            ],
-            "data": [
-                {
-                    "x": "01",
-                    "y": "16",
-                    "longDate": "01"
-                },
-                {
-                    "x": "0101",
-                    "y": "15",
-                    "longDate": "0101"
-                },
-                {
-                    "x": "010101",
-                    "y": "11",
-                    "longDate": "010101"
-                },
-                {
-                    "x": "010102",
-                    "y": "11",
-                    "longDate": "010102"
-                },
-                {
-                    "x": "0102",
-                    "y": "11",
-                    "longDate": "0102"
-                },
-                {
-                    "x": "0103",
-                    "y": "11",
-                    "longDate": "0103"
-                },
-                {
-                    "x": "2011",
-                    "y": "19",
-                    "longDate": "2011"
-                },
-                {
-                    "x": "2011.01",
-                    "y": "19",
-                    "longDate": "2011.01"
-                },
-                {
-                    "x": "2011.01.001",
-                    "y": "19",
-                    "longDate": "2011.01.001"
-                },
-                {
-                    "x": "2011.01.002",
-                    "y": "19",
-                    "longDate": "2011.01.002"
-                }
-            ],
-            "targetIDs": [
-                "0ca252249e64326a"
-            ],
-            "name": "厂家维度表记录数",
-            "tooltip": {
-                "formatter": {
-                    "identifier": "${CATEGORY}${SERIES}${VALUE}",
-                    "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
-                    "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
-                    "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
-                },
-                "padding": 10,
-                "shared": false,
-                "backgroundColor": "#ffffff",
-                "borderRadius": 2,
-                "shadow": true,
-                "borderWidth": 0,
-                "style": {
-                    "fontFamily": "Verdana",
-                    "color": "#1a1a1a",
-                    "fontSize": "14px"
-                },
-                "enabled": true,
-                "animation": true
-            },
-            "type": "forceBubble"
-        }
-    ],
-    "chartType": "forceBubble",
-    "style": "normal",
     "tools": {
         "hidden": false,
-        "toImage": {
-            "enabled": false
-        },
-        "refresh": {
-            "enabled": false
-        },
-        "sort": {
-            "enabled": false
-        },
-        "fullScreen": {
-            "enabled": false
-        }
+        "toImage": {"enabled": false},
+        "refresh": {"enabled": false},
+        "sort": {"enabled": false},
+        "fullScreen": {"enabled": false}
     },
-    "dataSheet": {
-        "borderColor": "#dddddd",
+    "colors": ["#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+    "dTools": {
+        "backgroundColor": "white",
+        "style": {"fontFamily": "Microsoft YaHei", "color": "#b2b2b2", "fontSize": "12px"},
+        "currentColor": "62b2ef",
+        "enabled": true
+    }
+};
+
+var areaMapOptions = {
+    "plotOptions": {
+        "dataLabels": {"autoAdjust": true, "enabled": false},
         "borderWidth": 1,
+        "tooltip": {
+            "formatter": {"identifier": "${VALUE}${NAME}${SERIES}"},
+            "padding": 10,
+            "shared": true,
+            "backgroundColor": "#ffffff",
+            "borderRadius": 2,
+            "shadow": true,
+            "borderWidth": 0,
+            "style": {
+                "fontFamily": "Microsoft YaHei",
+                "color": "#1a1a1a",
+                "fontSize": "12px",
+                "fontStyle": "",
+                "fontWeight": ""
+            },
+            "enabled": true,
+            "animation": true
+        },
+        "animation": true
+    },
+    "geo": {
+        "data": "./mapData/china.json",
+        "tileLayer": "",
+        "name": "中国",
+        "zoom": true
+    },
+    "series": [{
+        "dimensionIDs": ["cbd4d3f95a35ce18"],
+        "data": [{"name": "安徽省", "value": "83"}, {"name": "北京市", "value": "3"}, {
+            "name": "福建省",
+            "value": "69"
+        }, {"name": "甘肃省", "value": "81"}, {"name": "广东省", "value": "89"}, {
+            "name": "广西壮族自治区",
+            "value": "93"
+        }, {"name": "贵州省", "value": "80"}, {"name": "海南省", "value": "19"}, {
+            "name": "河北省",
+            "value": "152"
+        }, {"name": "河南省", "value": "128"}, {"name": "黑龙江省", "value": "78"}, {
+            "name": "湖北省",
+            "value": "79"
+        }, {"name": "湖南省", "value": "101"}],
+        "targetIDs": ["f5960edc174e2355"],
+        "name": "城市地区维度表记录数",
+        "tooltip": {
+            "formatter": {
+                "identifier": "${VALUE}${NAME}${SERIES}",
+                "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
+                "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
+                "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
+            },
+            "padding": 10,
+            "shared": true,
+            "backgroundColor": "#ffffff",
+            "borderRadius": 2,
+            "shadow": true,
+            "borderWidth": 0,
+            "style": {
+                "fontFamily": "Microsoft YaHei",
+                "color": "#1a1a1a",
+                "fontSize": "12px",
+                "fontStyle": "",
+                "fontWeight": ""
+            },
+            "enabled": true,
+            "animation": true
+        },
+        "type": "areaMap"
+    }],
+    "chartType": "areaMap",
+    "style": "normal",
+    "rangeLegend": {
+        "visible": true,
+        "maxHeight": "30%",
+        "continuous": false,
+        "range": {"color": "#04b1c2"},
         "style": {
             "fontFamily": "Microsoft YaHei",
             "color": "#1a1a1a",
@@ -275,40 +191,123 @@ var options = {
             "fontStyle": "",
             "fontWeight": ""
         },
-        "enabled": false
+        "position": "right-bottom",
+        "enabled": true,
+        "maxWidth": "30%"
     },
-    "colors": [
-        "#00c5dc",
-        "#5867c3",
-        "#ff525e",
-        "#ffa9cc",
-        "#ffaa00",
-        "#ffdb03",
-        "#9ccc66",
-        "#36c398",
-        "#00a7af",
-        "#2281bc",
-        "#766aef",
-        "#c576d3",
-        "#00c5dc",
-        "#5867c3",
-        "#ff525e",
-        "#ffa9cc",
-        "#ffaa00",
-        "#ffdb03",
-        "#9ccc66",
-        "#36c398",
-        "#00a7af",
-        "#2281bc",
-        "#766aef",
-        "#c576d3",
-        "#00c5dc",
-        "#5867c3",
-        "#ff525e",
-        "#ffa9cc",
-        "#ffaa00",
-        "#ffdb03",
-        "#9ccc66",
-        "#36c398"
-    ]
+    "tools": {
+        "hidden": false,
+        "toImage": {"enabled": false},
+        "refresh": {"enabled": false},
+        "sort": {"enabled": false},
+        "fullScreen": {"enabled": false}
+    },
+    "colors": ["#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"],
+    "dTools": {
+        "backgroundColor": "white",
+        "style": {"fontFamily": "Microsoft YaHei", "color": "#b2b2b2", "fontSize": "12px"},
+        "currentColor": "62b2ef",
+        "enabled": true
+    }
+};
+
+var dotMapOptions = {
+    "plotOptions": {
+        "dataLabels": {"autoAdjust": true, "enabled": false},
+        "large": false,
+        "borderWidth": 0,
+        "marker": {"symbol": "location", "radius": 8, "enabled": true},
+        "tooltip": {
+            "formatter": {"identifier": "${VALUE}${NAME}${SERIES}"},
+            "padding": 10,
+            "shared": true,
+            "backgroundColor": "#ffffff",
+            "borderRadius": 2,
+            "shadow": true,
+            "borderWidth": 0,
+            "style": {
+                "fontFamily": "Microsoft YaHei",
+                "color": "#1a1a1a",
+                "fontSize": "12px",
+                "fontStyle": "",
+                "fontWeight": ""
+            },
+            "enabled": true,
+            "animation": true
+        },
+        "animation": true
+    },
+    "geo": {"tileLayer": "", "zoom": true},
+    "series": [{
+        "dimensionIDs": ["cbd4d3f95a35ce18"],
+        "data": [{"lnglat": ["118.3008", "25.9277"], "size": "69", "name": "福建省"}, {
+            "lnglat": ["99.7129", "38.166"],
+            "size": "81",
+            "name": "甘肃省"
+        }, {"lnglat": ["113.4668", "22.8076"], "size": "89", "name": "广东省"}, {
+            "lnglat": ["107.7813", "23.6426"],
+            "size": "93",
+            "name": "广西壮族自治区"
+        }, {"lnglat": ["115.4004", "39.4688"], "size": "152", "name": "河北省"}, {
+            "lnglat": ["113.0668", "33.8818"],
+            "size": "128",
+            "name": "河南省"
+        }, {"lnglat": ["126.1445", "48.7156"], "size": "78", "name": "黑龙江省"}, {
+            "lnglat": ["112.2363", "31.1572"],
+            "size": "79",
+            "name": "湖北省"
+        }, {"lnglat": ["111.5332", "27.3779"], "size": "101", "name": "湖南省"}],
+        "targetIDs": ["f5960edc174e2355"],
+        "name": "城市地区维度表记录数",
+        "tooltip": {
+            "formatter": {
+                "identifier": "${VALUE}${NAME}${SERIES}",
+                "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
+                "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
+                "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
+            },
+            "padding": 10,
+            "shared": true,
+            "backgroundColor": "#ffffff",
+            "borderRadius": 2,
+            "shadow": true,
+            "borderWidth": 0,
+            "style": {
+                "fontFamily": "Microsoft YaHei",
+                "color": "#1a1a1a",
+                "fontSize": "12px",
+                "fontStyle": "",
+                "fontWeight": ""
+            },
+            "enabled": true,
+            "animation": true
+        },
+        "type": "scatter"
+    }],
+    "chartType": "pointMap",
+    "style": "normal",
+    "rangeLegend": {
+        "visible": true,
+        "maxHeight": "30%",
+        "continuous": false,
+        "range": {"color": ""},
+        "style": {
+            "fontFamily": "Microsoft YaHei",
+            "color": "#1a1a1a",
+            "fontSize": "12px",
+            "fontStyle": "",
+            "fontWeight": ""
+        },
+        "position": "right-bottom",
+        "enabled": true,
+        "maxWidth": "30%"
+    },
+    "tools": {
+        "hidden": false,
+        "toImage": {"enabled": false},
+        "refresh": {"enabled": false},
+        "sort": {"enabled": false},
+        "fullScreen": {"enabled": false}
+    },
+    "colors": ["#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#00a7af", "#2281bc", "#766aef", "#c576d3", "#00c5dc", "#5867c3", "#ff525e", "#ffa9cc", "#ffaa00", "#ffdb03", "#9ccc66", "#36c398", "#5caae4", "#70cc7f", "#ebbb67", "#e97e7b", "#6ed3c9"]
 };

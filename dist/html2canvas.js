@@ -1567,7 +1567,7 @@ function NodeContainer(node, parent) {
     this.opacity = null;
 }
 
-NodeContainer.prototype.cloneTo = function(stack) {
+NodeContainer.prototype.cloneTo = function (stack) {
     stack.visible = this.visible;
     stack.borders = this.borders;
     stack.bounds = this.bounds;
@@ -1579,16 +1579,16 @@ NodeContainer.prototype.cloneTo = function(stack) {
     stack.opacity = this.opacity;
 };
 
-NodeContainer.prototype.getOpacity = function() {
+NodeContainer.prototype.getOpacity = function () {
     return this.opacity === null ? (this.opacity = this.cssFloat('opacity')) : this.opacity;
 };
 
-NodeContainer.prototype.assignStack = function(stack) {
+NodeContainer.prototype.assignStack = function (stack) {
     this.stack = stack;
     stack.children.push(this);
 };
 
-NodeContainer.prototype.isElementVisible = function() {
+NodeContainer.prototype.isElementVisible = function () {
     return this.node.nodeType === Node.TEXT_NODE ? this.parent.visible : (
         this.css('display') !== "none" &&
         this.css('visibility') !== "hidden" &&
@@ -1597,7 +1597,7 @@ NodeContainer.prototype.isElementVisible = function() {
     );
 };
 
-NodeContainer.prototype.css = function(attribute) {
+NodeContainer.prototype.css = function (attribute) {
     if (!this.computedStyles) {
         this.computedStyles = this.isPseudoElement ? this.parent.computedStyle(this.before ? ":before" : ":after") : this.computedStyle(null);
     }
@@ -1605,11 +1605,11 @@ NodeContainer.prototype.css = function(attribute) {
     return this.styles[attribute] || (this.styles[attribute] = this.computedStyles[attribute]);
 };
 
-NodeContainer.prototype.prefixedCss = function(attribute) {
+NodeContainer.prototype.prefixedCss = function (attribute) {
     var prefixes = ["webkit", "moz", "ms", "o"];
     var value = this.css(attribute);
     if (value === undefined) {
-        prefixes.some(function(prefix) {
+        prefixes.some(function (prefix) {
             value = this.css(prefix + attribute.substr(0, 1).toUpperCase() + attribute.substr(1));
             return value !== undefined;
         }, this);
@@ -1617,38 +1617,38 @@ NodeContainer.prototype.prefixedCss = function(attribute) {
     return value === undefined ? null : value;
 };
 
-NodeContainer.prototype.computedStyle = function(type) {
+NodeContainer.prototype.computedStyle = function (type) {
     return this.node.ownerDocument.defaultView.getComputedStyle(this.node, type);
 };
 
-NodeContainer.prototype.cssInt = function(attribute) {
+NodeContainer.prototype.cssInt = function (attribute) {
     var value = parseInt(this.css(attribute), 10);
     return (isNaN(value)) ? 0 : value; // borders in old IE are throwing 'medium' for demo.html
 };
 
-NodeContainer.prototype.color = function(attribute) {
+NodeContainer.prototype.color = function (attribute) {
     return this.colors[attribute] || (this.colors[attribute] = new Color(this.css(attribute)));
 };
 
-NodeContainer.prototype.cssFloat = function(attribute) {
+NodeContainer.prototype.cssFloat = function (attribute) {
     var value = parseFloat(this.css(attribute));
     return (isNaN(value)) ? 0 : value;
 };
 
-NodeContainer.prototype.fontWeight = function() {
+NodeContainer.prototype.fontWeight = function () {
     var weight = this.css("fontWeight");
-    switch(parseInt(weight, 10)){
-    case 401:
-        weight = "bold";
-        break;
-    case 400:
-        weight = "normal";
-        break;
+    switch (parseInt(weight, 10)) {
+        case 401:
+            weight = "bold";
+            break;
+        case 400:
+            weight = "normal";
+            break;
     }
     return weight;
 };
 
-NodeContainer.prototype.parseClip = function() {
+NodeContainer.prototype.parseClip = function () {
     var matches = this.css('clip').match(this.CLIP);
     if (matches) {
         return {
@@ -1661,11 +1661,11 @@ NodeContainer.prototype.parseClip = function() {
     return null;
 };
 
-NodeContainer.prototype.parseBackgroundImages = function() {
+NodeContainer.prototype.parseBackgroundImages = function () {
     return this.backgroundImages || (this.backgroundImages = parseBackgrounds(this.css("backgroundImage")));
 };
 
-NodeContainer.prototype.cssList = function(property, index) {
+NodeContainer.prototype.cssList = function (property, index) {
     var value = (this.css(property) || '').split(',');
     value = value[index || 0] || value[0] || 'auto';
     value = value.trim().split(' ');
@@ -1675,7 +1675,7 @@ NodeContainer.prototype.cssList = function(property, index) {
     return value;
 };
 
-NodeContainer.prototype.parseBackgroundSize = function(bounds, image, index) {
+NodeContainer.prototype.parseBackgroundSize = function (bounds, image, index) {
     var size = this.cssList("backgroundSize", index);
     var width, height;
 
@@ -1683,7 +1683,10 @@ NodeContainer.prototype.parseBackgroundSize = function(bounds, image, index) {
         width = bounds.width * parseFloat(size[0]) / 100;
     } else if (/contain|cover/.test(size[0])) {
         var targetRatio = bounds.width / bounds.height, currentRatio = image.width / image.height;
-        return (targetRatio < currentRatio ^ size[0] === 'contain') ?  {width: bounds.height * currentRatio, height: bounds.height} : {width: bounds.width, height: bounds.width / currentRatio};
+        return (targetRatio < currentRatio ^ size[0] === 'contain') ? {
+            width: bounds.height * currentRatio,
+            height: bounds.height
+        } : {width: bounds.width, height: bounds.width / currentRatio};
     } else {
         width = parseInt(size[0], 10);
     }
@@ -1693,7 +1696,7 @@ NodeContainer.prototype.parseBackgroundSize = function(bounds, image, index) {
     } else if (size[1] === 'auto') {
         height = width / image.width * image.height;
     } else if (isPercentage(size[1])) {
-        height =  bounds.height * parseFloat(size[1]) / 100;
+        height = bounds.height * parseFloat(size[1]) / 100;
     } else {
         height = parseInt(size[1], 10);
     }
@@ -1705,11 +1708,11 @@ NodeContainer.prototype.parseBackgroundSize = function(bounds, image, index) {
     return {width: width, height: height};
 };
 
-NodeContainer.prototype.parseBackgroundPosition = function(bounds, image, index, backgroundSize) {
+NodeContainer.prototype.parseBackgroundPosition = function (bounds, image, index, backgroundSize) {
     var position = this.cssList('backgroundPosition', index);
     var left, top;
 
-    if (isPercentage(position[0])){
+    if (isPercentage(position[0])) {
         left = (bounds.width - (backgroundSize || image).width) * (parseFloat(position[0]) / 100);
     } else {
         left = parseInt(position[0], 10);
@@ -1717,8 +1720,8 @@ NodeContainer.prototype.parseBackgroundPosition = function(bounds, image, index,
 
     if (position[1] === 'auto') {
         top = left / image.width * image.height;
-    } else if (isPercentage(position[1])){
-        top =  (bounds.height - (backgroundSize || image).height) * parseFloat(position[1]) / 100;
+    } else if (isPercentage(position[1])) {
+        top = (bounds.height - (backgroundSize || image).height) * parseFloat(position[1]) / 100;
     } else {
         top = parseInt(position[1], 10);
     }
@@ -1730,11 +1733,11 @@ NodeContainer.prototype.parseBackgroundPosition = function(bounds, image, index,
     return {left: left, top: top};
 };
 
-NodeContainer.prototype.parseBackgroundRepeat = function(index) {
+NodeContainer.prototype.parseBackgroundRepeat = function (index) {
     return this.cssList("backgroundRepeat", index)[0];
 };
 
-NodeContainer.prototype.parseTextShadows = function() {
+NodeContainer.prototype.parseTextShadows = function () {
     var textShadow = this.css("textShadow");
     var results = [];
 
@@ -1753,7 +1756,7 @@ NodeContainer.prototype.parseTextShadows = function() {
     return results;
 };
 
-NodeContainer.prototype.parseTransform = function() {
+NodeContainer.prototype.parseTransform = function () {
     if (!this.transformData) {
         if (this.hasTransform()) {
             var offset = this.parseBounds();
@@ -1774,7 +1777,7 @@ NodeContainer.prototype.parseTransform = function() {
     return this.transformData;
 };
 
-NodeContainer.prototype.parseTransformMatrix = function() {
+NodeContainer.prototype.parseTransformMatrix = function () {
     if (!this.transformMatrix) {
         var transform = this.prefixedCss("transform");
         var matrix = transform ? parseMatrix(transform.match(this.MATRIX_PROPERTY)) : null;
@@ -1783,15 +1786,20 @@ NodeContainer.prototype.parseTransformMatrix = function() {
     return this.transformMatrix;
 };
 
-NodeContainer.prototype.parseBounds = function() {
-    return this.bounds || (this.bounds = this.hasTransform() ? offsetBounds(this.node) : getBounds(this.node));
+NodeContainer.prototype.inverseTransform = function () {
+    var transformData = this.parseTransform();
+    return {origin: transformData.origin, matrix: matrixInverse(transformData.matrix)};
 };
 
-NodeContainer.prototype.hasTransform = function() {
+NodeContainer.prototype.parseBounds = function () {
+    return this.bounds || (this.bounds = this.hasTransform()  ? offsetBounds(this.node, this.parseTransformMatrix()) : getBounds(this.node));
+};
+
+NodeContainer.prototype.hasTransform = function () {
     return this.parseTransformMatrix().join(",") !== "1,0,0,1,0,0" || (this.parent && this.parent.hasTransform());
 };
 
-NodeContainer.prototype.getValue = function() {
+NodeContainer.prototype.getValue = function () {
     var value = this.node.value || "";
     if (this.node.tagName === "SELECT") {
         value = selectionValue(this.node);
@@ -1813,15 +1821,25 @@ function selectionValue(node) {
 
 function parseMatrix(match) {
     if (match && match[1] === "matrix") {
-        return match[2].split(",").map(function(s) {
+        return match[2].split(",").map(function (s) {
             return parseFloat(s.trim());
         });
     } else if (match && match[1] === "matrix3d") {
-        var matrix3d = match[2].split(",").map(function(s) {
-          return parseFloat(s.trim());
+        var matrix3d = match[2].split(",").map(function (s) {
+            return parseFloat(s.trim());
         });
         return [matrix3d[0], matrix3d[1], matrix3d[4], matrix3d[5], matrix3d[12], matrix3d[13]];
     }
+}
+
+function matrixInverse(m) {
+    // This is programmed specifically for transform matrices, which have a fixed structure.
+    var a = m[0], b = m[2], c = m[4], d = m[1], e = m[3], f = m[5];
+    var det = a * e - b * d;
+    var M = [e, -d, -b, a, b * f - c * e, c * d - a * f].map(function (val) {
+        return val / det;
+    });
+    return M;
 }
 
 function isPercentage(value) {
@@ -1863,7 +1881,6 @@ function NodeParser(element, renderer, support, imageLoader, options) {
     this.stack = new StackingContext(true, 1, element.ownerDocument, null);
     var parent = new NodeContainer(element, null);
     if (options.background) {
-        //后面添加支持图片背景的功能
         renderer.rectangle(0, 0, renderer.width, renderer.height, new Color(options.background));
     }
     if (element === element.ownerDocument.documentElement) {
@@ -2208,7 +2225,7 @@ NodeParser.prototype.paintElement = function (container) {
                 this.paintFormValue(container);
                 break;
         }
-    }, this);
+    }, this, container);
 };
 
 NodeParser.prototype.paintCheckbox = function (container) {
@@ -3054,11 +3071,23 @@ CanvasRenderer.prototype.drawImage = function (imageContainer, sx, sy, sw, sh, d
     }
 };
 
-CanvasRenderer.prototype.clip = function (shapes, callback, context) {
+CanvasRenderer.prototype.clip = function (shapes, callback, context, container) {
     this.ctx.save();
-    shapes.filter(hasEntries).forEach(function (shape) {
-        this.shape(shape).clip();
-    }, this);
+    // shapes.filter(hasEntries).forEach(function (shape) {
+    //     this.shape(shape).clip();
+    // }, this);
+    if (container && container.hasTransform()) {
+        this.setTransform(container.inverseTransform());
+        shapes.slice(0, 1).filter(hasEntries).forEach(function (shape) {
+            this.shape(shape).clip();
+        }, this);
+        this.setTransform(container.parseTransform());
+    } else {
+        shapes.filter(hasEntries).forEach(function (shape) {
+            this.shape(shape).clip();
+
+        }, this);
+    }
     callback.call(context);
     this.ctx.restore();
 };
@@ -3363,8 +3392,8 @@ exports.smallImage = function smallImage() {
     return "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 };
 
-exports.bind = function(callback, context) {
-    return function() {
+exports.bind = function (callback, context) {
+    return function () {
         return callback.apply(context, arguments);
     };
 };
@@ -3377,17 +3406,17 @@ exports.bind = function(callback, context) {
  * Licensed under the MIT license.
  */
 
-exports.decode64 = function(base64) {
+exports.decode64 = function (base64) {
     var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     var len = base64.length, i, encoded1, encoded2, encoded3, encoded4, byte1, byte2, byte3;
 
     var output = "";
 
-    for (i = 0; i < len; i+=4) {
+    for (i = 0; i < len; i += 4) {
         encoded1 = chars.indexOf(base64[i]);
-        encoded2 = chars.indexOf(base64[i+1]);
-        encoded3 = chars.indexOf(base64[i+2]);
-        encoded4 = chars.indexOf(base64[i+3]);
+        encoded2 = chars.indexOf(base64[i + 1]);
+        encoded3 = chars.indexOf(base64[i + 2]);
+        encoded4 = chars.indexOf(base64[i + 3]);
 
         byte1 = (encoded1 << 2) | (encoded2 >> 4);
         byte2 = ((encoded2 & 15) << 4) | (encoded3 >> 2);
@@ -3396,7 +3425,7 @@ exports.decode64 = function(base64) {
             output += String.fromCharCode(byte1);
         } else if (encoded4 === 64 || encoded4 === -1) {
             output += String.fromCharCode(byte1, byte2);
-        } else{
+        } else {
             output += String.fromCharCode(byte1, byte2, byte3);
         }
     }
@@ -3404,7 +3433,7 @@ exports.decode64 = function(base64) {
     return output;
 };
 
-exports.getBounds = function(node) {
+exports.getBounds = function (node) {
     if (node.getBoundingClientRect) {
         var clientRect = node.getBoundingClientRect();
         var width = node.offsetWidth == null ? clientRect.width : node.offsetWidth;
@@ -3413,14 +3442,88 @@ exports.getBounds = function(node) {
             bottom: clientRect.bottom || (clientRect.top + clientRect.height),
             right: clientRect.left + width,
             left: clientRect.left,
-            width:  width,
+            width: width,
             height: node.offsetHeight == null ? clientRect.height : node.offsetHeight
         };
     }
     return {};
 };
 
-exports.offsetBounds = function(node) {
+exports.getBoundingBoxInArbitrarySpace = function (element, mat) {
+    var svgRoot = element.ownerSVGElement || element;
+    var bbox = element.getBBox();
+
+    var cPt1 = svgRoot.createSVGPoint();
+    cPt1.x = bbox.x;
+    cPt1.y = bbox.y;
+    cPt1 = cPt1.matrixTransform(mat);
+
+    // repeat for other corner points and the new bbox is
+    // simply the minX/minY  to maxX/maxY of the four points.
+    var cPt2 = svgRoot.createSVGPoint();
+    cPt2.x = bbox.x + bbox.width;
+    cPt2.y = bbox.y;
+    cPt2 = cPt2.matrixTransform(mat);
+
+    var cPt3 = svgRoot.createSVGPoint();
+    cPt3.x = bbox.x;
+    cPt3.y = bbox.y + bbox.height;
+    cPt3 = cPt3.matrixTransform(mat);
+
+    var cPt4 = svgRoot.createSVGPoint();
+    cPt4.x = bbox.x + bbox.width;
+    cPt4.y = bbox.y + bbox.height;
+    cPt4 = cPt4.matrixTransform(mat);
+
+    var points = [cPt1, cPt2, cPt3, cPt4];
+
+    //find minX,minY,maxX,maxY
+    var minX = Number.MAX_VALUE;
+    var minY = Number.MAX_VALUE;
+    var maxX = 0;
+    var maxY = 0;
+    for (var i = 0; i < points.length; i++) {
+        if (points[i].x < minX) {
+            minX = points[i].x;
+        }
+        if (points[i].y < minY) {
+            minY = points[i].y;
+        }
+        if (points[i].x > maxX) {
+            maxX = points[i].x;
+        }
+        if (points[i].y > maxY) {
+            maxY = points[i].y;
+        }
+    }
+
+    //instantiate new object that is like an SVGRect
+    var newBBox = {"x": minX, "y": minY, "width": maxX - minX, "height": maxY - minY};
+    return newBBox;
+};
+
+exports.getBBoxInScreenSpace = function (element) {
+    return exports.getBoundingBoxInArbitrarySpace(element, element.getScreenCTM());
+};
+
+exports.offsetBounds = function (node, matrix) {
+
+    if (node.tagName === 'svg' || node.tagName === 'path') {
+        var bounds = exports.getBounds(node);
+        if(exports.isEmptyObject(bounds)) {
+            return bounds;
+        }
+
+        return {
+            top: -matrix[5] + bounds.top,
+            bottom: bounds.bottom,
+            right: bounds.right,
+            left: -matrix[4] + bounds.left,
+            width: bounds.width,
+            height: bounds.height
+        };
+    }
+
     var parent = node.offsetParent ? exports.offsetBounds(node.offsetParent) : {top: 0, left: 0};
 
     return {
@@ -3433,19 +3536,19 @@ exports.offsetBounds = function(node) {
     };
 };
 
-exports.parseBackgrounds = function(backgroundImage) {
+exports.parseBackgrounds = function (backgroundImage) {
     var whitespace = ' \r\n\t',
         method, definition, prefix, prefix_i, block, results = [],
         mode = 0, numParen = 0, quote, args;
-    var appendResult = function() {
-        if(method) {
+    var appendResult = function () {
+        if (method) {
             if (definition.substr(0, 1) === '"') {
                 definition = definition.substr(1, definition.length - 2);
             }
             if (definition) {
                 args.push(definition);
             }
-            if (method.substr(0, 1) === '-' && (prefix_i = method.indexOf('-', 1 ) + 1) > 0) {
+            if (method.substr(0, 1) === '-' && (prefix_i = method.indexOf('-', 1) + 1) > 0) {
                 prefix = method.substr(0, prefix_i);
                 method = method.substr(prefix_i);
             }
@@ -3462,59 +3565,59 @@ exports.parseBackgrounds = function(backgroundImage) {
     };
     args = [];
     method = prefix = definition = block = '';
-    backgroundImage.split("").forEach(function(c) {
+    backgroundImage.split("").forEach(function (c) {
         if (mode === 0 && whitespace.indexOf(c) > -1) {
             return;
         }
-        switch(c) {
-        case '"':
-            if(!quote) {
-                quote = c;
-            } else if(quote === c) {
-                quote = null;
-            }
-            break;
-        case '(':
-            if(quote) {
+        switch (c) {
+            case '"':
+                if (!quote) {
+                    quote = c;
+                } else if (quote === c) {
+                    quote = null;
+                }
                 break;
-            } else if(mode === 0) {
-                mode = 1;
-                block += c;
-                return;
-            } else {
-                numParen++;
-            }
-            break;
-        case ')':
-            if (quote) {
-                break;
-            } else if(mode === 1) {
-                if(numParen === 0) {
-                    mode = 0;
+            case '(':
+                if (quote) {
+                    break;
+                } else if (mode === 0) {
+                    mode = 1;
                     block += c;
-                    appendResult();
                     return;
                 } else {
-                    numParen--;
+                    numParen++;
                 }
-            }
-            break;
-
-        case ',':
-            if (quote) {
                 break;
-            } else if(mode === 0) {
-                appendResult();
-                return;
-            } else if (mode === 1) {
-                if (numParen === 0 && !method.match(/^url$/i)) {
-                    args.push(definition);
-                    definition = '';
-                    block += c;
-                    return;
+            case ')':
+                if (quote) {
+                    break;
+                } else if (mode === 1) {
+                    if (numParen === 0) {
+                        mode = 0;
+                        block += c;
+                        appendResult();
+                        return;
+                    } else {
+                        numParen--;
+                    }
                 }
-            }
-            break;
+                break;
+
+            case ',':
+                if (quote) {
+                    break;
+                } else if (mode === 0) {
+                    appendResult();
+                    return;
+                } else if (mode === 1) {
+                    if (numParen === 0 && !method.match(/^url$/i)) {
+                        args.push(definition);
+                        definition = '';
+                        block += c;
+                        return;
+                    }
+                }
+                break;
         }
 
         block += c;
@@ -3527,6 +3630,13 @@ exports.parseBackgrounds = function(backgroundImage) {
 
     appendResult();
     return results;
+};
+
+exports.isEmptyObject = function isEmptyObject(e) {
+    var t;
+    for (t in e)
+        return !1;
+    return !0
 };
 
 },{}],27:[function(_dereq_,module,exports){
