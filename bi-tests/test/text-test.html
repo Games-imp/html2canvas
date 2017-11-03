@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type='text/javascript' src='../../examples/es6_promise.js'></script>
+    <script type='text/javascript' src='../../dist/html2canvas.js'></script>
+    <script type='text/javascript' src='../../dist/html2canvas.svg.js'></script>
+    <script type='text/javascript' src='../config.js'></script>
+    <link rel='stylesheet' href='../test.css' type='text/css'/>
+    <title>text test</title>
+</head>
+<body class='demo'>
+<div class="float">
+    <div id="text">
+        <svg width='150px' height='200px' xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(50,11)">
+                <text style="-webkit-writing-mode: vertical-lr">
+                    合同类型
+                </text>
+            </g>
+        </svg>
+    </div>
+    <div>
+        <img id='text_canvas'>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript">
+
+    function renderText() {
+        html2canvas(document.querySelector('svg'), {
+            logging: true,
+            useCORS: true
+        }).then(function (canvas) {
+            var imgData = canvas.toDataURL();
+            document.getElementById('text_canvas').src = imgData;
+        })
+    }
+
+    window.onload = function () {
+        renderText();
+    };
+
+</script>
+</html>

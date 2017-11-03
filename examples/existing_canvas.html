@@ -46,7 +46,10 @@
     var img = new Image;
     img.onload = function(){
         ctx.drawImage(img,0,0); // Or at whatever offset you like
-        html2canvas(document.querySelector("body"), {canvas: canvas}).then(function(canvas) {
+        html2canvas(document.querySelector("body"), {
+            canvas: canvas,
+            logging: true
+        }).then(function(canvas) {
             document.body.appendChild(canvas);
             console.log('Drew on the existing canvas');
         });

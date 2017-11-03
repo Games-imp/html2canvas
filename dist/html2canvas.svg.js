@@ -5335,7 +5335,7 @@ if (typeof console !== 'undefined') {
         parentAttributes = fabric.parseAttributes(element.parentNode, attributes, svgUid);
       } else if(element.nodeName === 'tspan' && element.parentNode && fabric.tspanValidParentsRegEx.test(element.parentNode.nodeName)) {
         //tspan的特殊处理 tspan的父节点是text，不渲染text的同时，需要根据text的父节点g确定tspan的位置
-        parentAttributes = fabric.parseAttributes(element.parentNode.parentNode, attributes, svgUid)
+        parentAttributes = fabric.parseAttributes(element.parentNode, attributes, svgUid)
       }
 
       fontSize = (parentAttributes && parentAttributes.fontSize ) ||
@@ -25606,7 +25606,7 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
    * @see: http://www.w3.org/TR/SVG/text.html#TextElement
    */
   fabric.Text.ATTRIBUTE_NAMES = fabric.SHARED_ATTRIBUTES.concat(
-    'x y dx dy font-family font-style font-weight font-size text-decoration text-anchor'.split(' '));
+    'x y dx dy font-family font-style font-weight font-size text-decoration text-anchor writing-mode writingMode -ms-writing-mode -webkit-writing-mode'.split(' '));
 
   /**
    * Default SVG font size
@@ -25676,6 +25676,24 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
       textContent = element.textContent;
     }
 
+    var writingMode = ['writing-mode', '-webkit-writing-mode', 'writingMode', '-ms-writing-mode'];
+    var verticalValue = ['vertical-rl', 'tb-rl'];
+
+    for (var idx = 0, len = writingMode.length; idx < len; idx++) {
+      if (writingMode[idx] in options) {
+        var value = options[writingMode[idx]];
+        if (verticalValue.indexOf(value) !== -1) {
+          options.transformMatrix[0] = 0;
+          options.transformMatrix[1] = 1;
+          options.transformMatrix[2] = -1;
+          options.transformMatrix[3] = 0;
+          options.left = options.top;
+          options.top = -options.dy
+        }
+        break;
+      }
+    }
+
     textContent = textContent.replace(/^\s+|\s+$|\n+/g, '').replace(/\s+/g, ' ');
 
     var text = new fabric.Text(textContent, options),
@@ -25699,7 +25717,9 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
       left: text.left - offX,
       top: text.top - (textHeight - text.fontSize * (0.18 + text._fontSizeFraction)) / text.lineHeight
     });
+
     callback(text);
+
   };
   /* _FROM_SVG_END_ */
 

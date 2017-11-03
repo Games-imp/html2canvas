@@ -1792,7 +1792,7 @@ NodeContainer.prototype.inverseTransform = function () {
 };
 
 NodeContainer.prototype.parseBounds = function () {
-    return this.bounds || (this.bounds = this.hasTransform()  ? offsetBounds(this.node, this.parseTransformMatrix()) : getBounds(this.node));
+    return this.bounds || (this.bounds = this.hasTransform() ? offsetBounds(this.node, this.parseTransformMatrix()) : getBounds(this.node));
 };
 
 NodeContainer.prototype.hasTransform = function () {
@@ -3508,7 +3508,7 @@ exports.getBBoxInScreenSpace = function (element) {
 
 exports.offsetBounds = function (node, matrix) {
 
-    if (node.tagName === 'svg' || node.tagName === 'path') {
+    if (node.tagName === 'svg') {
         var bounds = exports.getBounds(node);
         if(exports.isEmptyObject(bounds)) {
             return bounds;

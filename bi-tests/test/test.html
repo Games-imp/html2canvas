@@ -9,14 +9,14 @@
     <!-- <script type='text/javascript' src='http://192.168.1.115:8075/WebReport/ReportServer?op=emb&resource=third.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script> -->
     <!-- <script type='text/javascript' src='http://192.168.1.115:8075/WebReport/ReportServer?op=emb&resource=base.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script> -->
     <!-- <script type='text/javascript' src='http://192.168.1.115:8075/WebReport/ReportServer?op=emb&resource=export.js&__v__=%E4%B8%8D%E6%98%AF%E5%AE%89%E8%A3%85%E7%89%88%E6%9C%AC'></script> -->
-    <script type='text/javascript' src='vancharts-all.js'></script>
-    <script type='text/javascript' src='jquery.js'></script>
-    <script type='text/javascript' src='../examples/es6_promise.js'></script>
-    <script type='text/javascript' src='../dist/html2canvas.js'></script>
-    <script type='text/javascript' src='../dist/html2canvas.svg.js'></script>
-    <script type='text/javascript' src='config.js'></script>
-    <link rel='stylesheet' href='test.css' type='text/css'/>
-    <link rel="stylesheet" href='mapCss/leaflet.css' type="text/css">
+    <script type='text/javascript' src='../vancharts-all.js'></script>
+    <script type='text/javascript' src='../jquery.js'></script>
+    <script type='text/javascript' src='../../examples/es6_promise.js'></script>
+    <script type='text/javascript' src='../../dist/html2canvas.js'></script>
+    <script type='text/javascript' src='../../dist/html2canvas.svg.js'></script>
+    <script type='text/javascript' src='../config.js'></script>
+    <link rel='stylesheet' href='../test.css' type='text/css'/>
+    <link rel="stylesheet" href='../mapCss/leaflet.css' type="text/css">
 </head>
 
 <body>
@@ -49,7 +49,7 @@
             <img id='path_canvas'>
         </div>
         <div id='image_wrapper' style="overflow: inherit">
-            <img id='wrapper' src='test.jpg'>
+            <img id='wrapper' src='../test.jpg'>
         </div>
         <div>
             <img id='image_canvas'>
@@ -72,7 +72,8 @@
 <script type="text/javascript">
     var vessel = document.getElementById('vessel');
     var wrapper = VanCharts.init(vessel);
-    wrapper.setOptions(bubbleMapOptions);
+    wrapper.setOptions(barChartOptions);
+//    wrapper.setOptions(bubbleMapOptions);
 //    wrapper.setOptions(dotMapOptions);
 //    wrapper.setOptions(areaMapOptions);
 
