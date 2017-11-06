@@ -3077,15 +3077,43 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
     //     this.shape(shape).clip();
     // }, this);
     if (container && container.hasTransform()) {
+        //BI-11228 地图图层的特殊处理
+        var len = shapes.length;
+        var isMapBGImage = container.node.nodeName === 'IMG' && container.node.parentNode.className.indexOf('leaflet-tile-container') > -1;
+        if (isMapBGImage) {
+            if (shapes[len - 1]) {
+                shapes[len - 1][0][1] += container.transformMatrix[4];
+                shapes[len - 1][0][2] += container.transformMatrix[5];
+                shapes[len - 1][1][1] += container.transformMatrix[4];
+                shapes[len - 1][1][2] += container.transformMatrix[5];
+                shapes[len - 1][2][1] += container.transformMatrix[4];
+                shapes[len - 1][2][2] += container.transformMatrix[5];
+                shapes[len - 1][3][1] += container.transformMatrix[4];
+                shapes[len - 1][3][2] += container.transformMatrix[5];
+            }
+            if (shapes[len - 2]) {
+                var currShape = shapes[len - 2], temp = [];
+                for (var i = 0, currShapeLen = currShape.length; i < currShapeLen; i++) {
+                    var arr = [];
+                    for (var j = 0, length = currShape[i].length; j < length; j++) {
+                         arr.push(currShape[i][j]);
+                    }
+                    temp.push(arr);
+                }
+                var scale = container.parent && container.transformMatrix ? container.parent.transformMatrix[0] : 1;
+                temp[1][1] = temp[2][1] = (temp[1][1] - temp[0][1]) / scale + temp[0][1];
+                temp[2][2] = temp[3][2] = (temp[2][2] - temp[1][2]) / scale + temp[1][2];
+                shapes[len - 2] = temp;
+            }
+        }
         this.setTransform(container.inverseTransform());
-        shapes.slice(0, 1).filter(hasEntries).forEach(function (shape) {
+        shapes.filter(hasEntries).forEach(function (shape) {
             this.shape(shape).clip();
         }, this);
         this.setTransform(container.parseTransform());
     } else {
         shapes.filter(hasEntries).forEach(function (shape) {
             this.shape(shape).clip();
-
         }, this);
     }
     callback.call(context);

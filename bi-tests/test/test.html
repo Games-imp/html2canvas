@@ -84,6 +84,9 @@
     var container = document.querySelector('#container');
 
     document.querySelector('#btn').onclick = function () {
+        vessel.style.width = '800px';
+        vessel.style.height = '500px';
+        wrapper.resize();
         renderChart()
     };
 

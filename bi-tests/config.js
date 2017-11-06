@@ -387,13 +387,26 @@ var bubbleMapOptions = {
 
 var areaMapOptions = {
     "plotOptions": {
-        "dataLabels": {"autoAdjust": true, "enabled": false},
+        "dataLabels": {
+            "formatter": {"identifier": "${SIZE}${VALUE}"},
+            "connectorWidth": 0,
+            "autoAdjust": false,
+            "style": {
+                "fontFamily": "Microsoft YaHei",
+                "color": "#1a1a1a",
+                "fontSize": "12px",
+                "fontStyle": "",
+                "fontWeight": ""
+            },
+            "align": "center",
+            "enabled": true
+        },
         "borderWidth": 1,
         "tooltip": {
-            "formatter": {"identifier": "${VALUE}${NAME}${SERIES}"},
+            "formatter": {"identifier": "${SIZE}${VALUE}${NAME}${SERIES}"},
             "padding": 10,
             "shared": true,
-            "backgroundColor": "#ffffff",
+            "backgroundColor": "#884898",
             "borderRadius": 2,
             "shadow": true,
             "borderWidth": 0,
@@ -410,13 +423,77 @@ var areaMapOptions = {
         "animation": true
     },
     "geo": {
-        "data": "./mapData/china.json",
-        "tileLayer": "",
+        "data": "../mapData/china.json",
+        "tileLayer": "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
         "name": "中国",
         "zoom": true
     },
+    "data": {
+        "s": [2305],
+        "c": [{"s": [83], "x": 1, "n": "安徽省"}, {"s": [3], "x": 1, "n": "北京市"}, {
+            "s": [69],
+            "x": 1,
+            "n": "福建省"
+        }, {"s": [81], "x": 1, "n": "甘肃省"}, {"s": [89], "x": 1, "n": "广东省"}, {
+            "s": [93],
+            "x": 1,
+            "n": "广西壮族自治区"
+        }, {"s": [80], "x": 1, "n": "贵州省"}, {"s": [19], "x": 1, "n": "海南省"}, {
+            "s": [152],
+            "x": 1,
+            "n": "河北省"
+        }, {"s": [128], "x": 1, "n": "河南省"}, {"s": [78], "x": 1, "n": "黑龙江省"}, {
+            "s": [79],
+            "x": 1,
+            "n": "湖北省"
+        }, {"s": [101], "x": 1, "n": "湖南省"}, {"s": [49], "x": 1, "n": "吉林省"}, {
+            "s": [76],
+            "x": 1,
+            "n": "江苏省"
+        }, {"s": [92], "x": 1, "n": "江西省"}, {"s": [57], "x": 1, "n": "辽宁省"}, {
+            "s": [37],
+            "x": 1,
+            "n": "内蒙古自治区"
+        }, {"s": [20], "x": 1, "n": "宁夏回族自治区"}, {"s": [40], "x": 1, "n": "青海省"}, {
+            "s": [114],
+            "x": 1,
+            "n": "山东省"
+        }, {"s": [107], "x": 1, "n": "山西省"}, {"s": [96], "x": 1, "n": "陕西省"}, {
+            "s": [3],
+            "x": 1,
+            "n": "上海市"
+        }, {"s": [162], "x": 1, "n": "四川省"}, {"s": [4], "x": 1, "n": "天津市"}, {
+            "s": [78],
+            "x": 1,
+            "n": "西藏自治区"
+        }, {"s": [88], "x": 1, "n": "新疆维吾尔自治区"}, {"s": [125], "x": 1, "n": "云南省"}, {
+            "s": [74],
+            "x": 1,
+            "n": "浙江省"
+        }, {"s": [28], "x": 1, "n": "重庆市"}],
+        "x": 32
+    },
     "series": [{
-        "dimensionIDs": ["cbd4d3f95a35ce18"],
+        "dataLabels": {
+            "formatter": {
+                "identifier": "${SIZE}${VALUE}",
+                "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
+                "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
+                "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
+            },
+            "connectorWidth": 0,
+            "autoAdjust": false,
+            "style": {
+                "fontFamily": "Microsoft YaHei",
+                "color": "#1a1a1a",
+                "fontSize": "12px",
+                "fontStyle": "",
+                "fontWeight": ""
+            },
+            "align": "center",
+            "enabled": true
+        },
+        "dimensionIDs": ["0e1edba9078d4382"],
         "data": [{"name": "安徽省", "value": "83"}, {"name": "北京市", "value": "3"}, {
             "name": "福建省",
             "value": "69"
@@ -429,19 +506,37 @@ var areaMapOptions = {
         }, {"name": "河南省", "value": "128"}, {"name": "黑龙江省", "value": "78"}, {
             "name": "湖北省",
             "value": "79"
-        }, {"name": "湖南省", "value": "101"}],
-        "targetIDs": ["f5960edc174e2355"],
+        }, {"name": "湖南省", "value": "101"}, {"name": "吉林省", "value": "49"}, {
+            "name": "江苏省",
+            "value": "76"
+        }, {"name": "江西省", "value": "92"}, {"name": "辽宁省", "value": "57"}, {
+            "name": "内蒙古自治区",
+            "value": "37"
+        }, {"name": "宁夏回族自治区", "value": "20"}, {"name": "青海省", "value": "40"}, {
+            "name": "山东省",
+            "value": "114"
+        }, {"name": "山西省", "value": "107"}, {"name": "陕西省", "value": "96"}, {
+            "name": "上海市",
+            "value": "3"
+        }, {"name": "四川省", "value": "162"}, {"name": "天津市", "value": "4"}, {
+            "name": "西藏自治区",
+            "value": "78"
+        }, {"name": "新疆维吾尔自治区", "value": "88"}, {"name": "云南省", "value": "125"}, {
+            "name": "浙江省",
+            "value": "74"
+        }, {"name": "重庆市", "value": "28"}],
+        "targetIDs": ["89f15d49a4d24a5d"],
         "name": "城市地区维度表记录数",
         "tooltip": {
             "formatter": {
-                "identifier": "${VALUE}${NAME}${SERIES}",
+                "identifier": "${SIZE}${VALUE}${NAME}${SERIES}",
                 "arrivalRateFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}",
                 "valueFormat": "function(){return BI.contentFormat(arguments[0], \"#,###.##\") + \"\"}",
                 "percentFormat": "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"
             },
             "padding": 10,
             "shared": true,
-            "backgroundColor": "#ffffff",
+            "backgroundColor": "#884898",
             "borderRadius": 2,
             "shadow": true,
             "borderWidth": 0,
@@ -487,7 +582,7 @@ var areaMapOptions = {
         "backgroundColor": "white",
         "style": {"fontFamily": "Microsoft YaHei", "color": "#b2b2b2", "fontSize": "12px"},
         "currentColor": "62b2ef",
-        "enabled": true
+        "enabled": false
     }
 };
 
