@@ -188,9 +188,11 @@ NodeParser.prototype.getChildren = function (parentContainer) {
     return flatten([].filter.call(parentContainer.node.childNodes, renderableNode).map(function (node) {
         var container;
         container = [node.nodeType === Node.TEXT_NODE ? new TextContainer(node, parentContainer) : new NodeContainer(node, parentContainer)].filter(nonIgnoredElement);
+        //数据点提示的div在svg下面 不画数据点提示，画的话会出问题
+        var isExcludeNodes = node.previousSibling && node.previousSibling.tagName === 'svg';
         //html2canvas不画text
-        container = node.nodeName === "text" ? [] : container;
-        return node.nodeType === Node.ELEMENT_NODE && container.length && node.tagName !== "TEXTAREA" ? (container[0].isElementVisible() ? container.concat(this.getChildren(container[0])) : []) : container;
+        container = node.nodeName === "text" || isExcludeNodes ? [] : container;
+        return node.nodeType === Node.ELEMENT_NODE && container.length && node.tagName !== "TEXTAREA" ? (container[0].isElementVisible() && !isExcludeNodes ? container.concat(this.getChildren(container[0])) : []) : container;
     }, this));
 };
 
