@@ -73,10 +73,43 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
     //     this.shape(shape).clip();
     // }, this);
     if (container && container.hasTransform()) {
-        //BI-11228 地图图层的特殊处理
         var len = shapes.length;
+        function calOffset (shape, scale, offSetX, offSetY) {
+            var temp = [];
+            for (var i = 0, currShapeLen = shape.length; i < currShapeLen; i++) {
+                var arr = [];
+                for (var j = 0, length = shape[i].length; j < length; j++) {
+                    arr.push(shape[i][j]);
+                }
+                temp.push(arr);
+            }
+            temp[1][1] = temp[2][1] = (temp[1][1] - temp[0][1]) / scale + temp[0][1];
+            temp[2][2] = temp[3][2] = (temp[2][2] - temp[1][2]) / scale + temp[1][2];
+            temp[0][1] -= offSetX / scale;
+            temp[0][2] -= offSetY / scale;
+            temp[1][1] -= offSetX / scale;
+            temp[1][2] -= offSetY / scale;
+            temp[2][1] -= offSetX / scale;
+            temp[2][2] -= offSetY / scale;
+            temp[3][1] -= offSetX / scale;
+            temp[3][2] -= offSetY / scale;
+            return temp;
+        }
+        //BI-11228 地图图层的特殊处理
         var isMapBGImage = container.node.nodeName === 'IMG' && container.node.parentNode.className.indexOf('leaflet-tile-container') > -1;
         if (isMapBGImage) {
+            var p = container.parent.parent.parent;
+            var offSetX = p.parent.transformMatrix[4];
+            var offSetY = p.parent.transformMatrix[5];
+            var scale = container.parent && container.transformMatrix ? container.parent.transformMatrix[0] : 1;
+
+            if(shapes[0]) {
+                shapes[0] = calOffset(shapes[0], scale, offSetX, offSetY)
+            }
+            if (shapes[1]) {
+                shapes[1] = calOffset(shapes[1], scale, offSetX, offSetY)
+            }
+
             if (shapes[len - 1]) {
                 shapes[len - 1][0][1] += container.transformMatrix[4];
                 shapes[len - 1][0][2] += container.transformMatrix[5];
@@ -86,20 +119,6 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
                 shapes[len - 1][2][2] += container.transformMatrix[5];
                 shapes[len - 1][3][1] += container.transformMatrix[4];
                 shapes[len - 1][3][2] += container.transformMatrix[5];
-            }
-            if (shapes[len - 2]) {
-                var currShape = shapes[len - 2], temp = [];
-                for (var i = 0, currShapeLen = currShape.length; i < currShapeLen; i++) {
-                    var arr = [];
-                    for (var j = 0, length = currShape[i].length; j < length; j++) {
-                         arr.push(currShape[i][j]);
-                    }
-                    temp.push(arr);
-                }
-                var scale = container.parent && container.transformMatrix ? container.parent.transformMatrix[0] : 1;
-                temp[1][1] = temp[2][1] = (temp[1][1] - temp[0][1]) / scale + temp[0][1];
-                temp[2][2] = temp[3][2] = (temp[2][2] - temp[1][2]) / scale + temp[1][2];
-                shapes[len - 2] = temp;
             }
         }
         this.setTransform(container.inverseTransform());

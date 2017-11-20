@@ -118,7 +118,7 @@ exports.getBBoxInScreenSpace = function (element) {
 
 exports.offsetBounds = function (node, matrix) {
 
-    if (node.tagName === 'svg') {
+    if (node.tagName === 'svg' || node.tagName === 'path') {
         var bounds = exports.getBounds(node);
         if(exports.isEmptyObject(bounds)) {
             return bounds;
