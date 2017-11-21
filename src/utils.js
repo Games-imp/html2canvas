@@ -47,8 +47,10 @@ exports.getBounds = function (node) {
     if (node.getBoundingClientRect) {
         var clientRect = node.getBoundingClientRect();
         var width = node.offsetWidth == null ? clientRect.width : node.offsetWidth;
+        // ie10 这边做一下恶心的处理 ie10下 getBoundingClientRect得到的top不是svg距离页面顶端的高度，先设置为0
+        var top = node.nodeName === 'svg' ? 0 : clientRect.top;
         return {
-            top: clientRect.top,
+            top: top,
             bottom: clientRect.bottom || (clientRect.top + clientRect.height),
             right: clientRect.left + width,
             left: clientRect.left,

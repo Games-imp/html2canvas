@@ -2046,6 +2046,7 @@ NodeParser.prototype.getPseudoElement = function (container, type) {
 NodeParser.prototype.getChildren = function (parentContainer) {
     return flatten([].filter.call(parentContainer.node.childNodes, renderableNode).map(function (node) {
         var container;
+        if(node && node.nodeName === 'path') node.style.filter = "";
         container = [node.nodeType === Node.TEXT_NODE ? new TextContainer(node, parentContainer) : new NodeContainer(node, parentContainer)].filter(nonIgnoredElement);
         //数据点提示的div在svg下面 不画数据点提示，画的话会出问题 && 查询重置按钮控件不导出
         var isExcludeNodes = (node.previousSibling && node.previousSibling.tagName === 'svg') ||
@@ -3078,14 +3079,45 @@ CanvasRenderer.prototype.drawImage = function (imageContainer, sx, sy, sw, sh, d
 
 CanvasRenderer.prototype.clip = function (shapes, callback, context, container) {
     this.ctx.save();
-    // shapes.filter(hasEntries).forEach(function (shape) {
-    //     this.shape(shape).clip();
-    // }, this);
+
     if (container && container.hasTransform()) {
-        //BI-11228 地图图层的特殊处理
         var len = shapes.length;
+        function calOffset (shape, scale, offSetX, offSetY) {
+            var temp = [];
+            for (var i = 0, currShapeLen = shape.length; i < currShapeLen; i++) {
+                var arr = [];
+                for (var j = 0, length = shape[i].length; j < length; j++) {
+                    arr.push(shape[i][j]);
+                }
+                temp.push(arr);
+            }
+            temp[1][1] = temp[2][1] = (temp[1][1] - temp[0][1]) / scale + temp[0][1];
+            temp[2][2] = temp[3][2] = (temp[2][2] - temp[1][2]) / scale + temp[1][2];
+            temp[0][1] -= offSetX / scale;
+            temp[0][2] -= offSetY / scale;
+            temp[1][1] -= offSetX / scale;
+            temp[1][2] -= offSetY / scale;
+            temp[2][1] -= offSetX / scale;
+            temp[2][2] -= offSetY / scale;
+            temp[3][1] -= offSetX / scale;
+            temp[3][2] -= offSetY / scale;
+            return temp;
+        }
+        //BI-11228 地图图层的特殊处理
         var isMapBGImage = container.node.nodeName === 'IMG' && container.node.parentNode.className.indexOf('leaflet-tile-container') > -1;
         if (isMapBGImage) {
+            var p = container.parent.parent.parent.parent;
+            var offSetX = p.transformMatrix[4] + container.parent.transformMatrix[4];
+            var offSetY = p.transformMatrix[5] + container.parent.transformMatrix[5];
+            var scale = container.parent && container.transformMatrix ? container.parent.transformMatrix[0] : 1;
+
+            if(shapes[0]) {
+                shapes[0] = calOffset(shapes[0], scale, offSetX, offSetY)
+            }
+            if (shapes[1]) {
+                shapes[1] = calOffset(shapes[1], scale, offSetX, offSetY)
+            }
+
             if (shapes[len - 1]) {
                 shapes[len - 1][0][1] += container.transformMatrix[4];
                 shapes[len - 1][0][2] += container.transformMatrix[5];
@@ -3096,20 +3128,13 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
                 shapes[len - 1][3][1] += container.transformMatrix[4];
                 shapes[len - 1][3][2] += container.transformMatrix[5];
             }
-            if (shapes[len - 2]) {
-                var currShape = shapes[len - 2], temp = [];
-                for (var i = 0, currShapeLen = currShape.length; i < currShapeLen; i++) {
-                    var arr = [];
-                    for (var j = 0, length = currShape[i].length; j < length; j++) {
-                         arr.push(currShape[i][j]);
-                    }
-                    temp.push(arr);
-                }
-                var scale = container.parent && container.transformMatrix ? container.parent.transformMatrix[0] : 1;
-                temp[1][1] = temp[2][1] = (temp[1][1] - temp[0][1]) / scale + temp[0][1];
-                temp[2][2] = temp[3][2] = (temp[2][2] - temp[1][2]) / scale + temp[1][2];
-                shapes[len - 2] = temp;
-            }
+        }
+
+        //svg特殊处理 父亲的父亲带有transform
+        if(container.node.nodeName === 'svg' && container.parent.node.className.indexOf && container.parent.node.className.indexOf('leaflet-overlay-pane') > -1) {
+            var svgOffsetX = container.parent.parent.transformMatrix[4];
+            var svgOffsetY = container.parent.parent.transformMatrix[5];
+            shapes[2] = calOffset(shapes[2], 1, svgOffsetX, svgOffsetY)
         }
         this.setTransform(container.inverseTransform());
         shapes.filter(hasEntries).forEach(function (shape) {
@@ -3299,7 +3324,7 @@ Support.prototype.testSVG = function () {
     } catch (e) {
         return false;
     }
-    return true;
+    return false;
 };
 
 module.exports = Support;
@@ -3541,7 +3566,7 @@ exports.getBBoxInScreenSpace = function (element) {
 
 exports.offsetBounds = function (node, matrix) {
 
-    if (node.tagName === 'svg') {
+    if (node.tagName === 'svg' || node.tagName === 'path') {
         var bounds = exports.getBounds(node);
         if(exports.isEmptyObject(bounds)) {
             return bounds;

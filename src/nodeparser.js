@@ -187,6 +187,7 @@ NodeParser.prototype.getPseudoElement = function (container, type) {
 NodeParser.prototype.getChildren = function (parentContainer) {
     return flatten([].filter.call(parentContainer.node.childNodes, renderableNode).map(function (node) {
         var container;
+        if(node && node.nodeName === 'path') node.style.filter = "";
         container = [node.nodeType === Node.TEXT_NODE ? new TextContainer(node, parentContainer) : new NodeContainer(node, parentContainer)].filter(nonIgnoredElement);
         //数据点提示的div在svg下面 不画数据点提示，画的话会出问题 && 查询重置按钮控件不导出
         var isExcludeNodes = (node.previousSibling && node.previousSibling.tagName === 'svg') ||

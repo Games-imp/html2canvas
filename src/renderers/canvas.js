@@ -69,9 +69,7 @@ CanvasRenderer.prototype.drawImage = function (imageContainer, sx, sy, sw, sh, d
 
 CanvasRenderer.prototype.clip = function (shapes, callback, context, container) {
     this.ctx.save();
-    // shapes.filter(hasEntries).forEach(function (shape) {
-    //     this.shape(shape).clip();
-    // }, this);
+
     if (container && container.hasTransform()) {
         var len = shapes.length;
         function calOffset (shape, scale, offSetX, offSetY) {
@@ -98,9 +96,9 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
         //BI-11228 地图图层的特殊处理
         var isMapBGImage = container.node.nodeName === 'IMG' && container.node.parentNode.className.indexOf('leaflet-tile-container') > -1;
         if (isMapBGImage) {
-            var p = container.parent.parent.parent;
-            var offSetX = p.parent.transformMatrix[4];
-            var offSetY = p.parent.transformMatrix[5];
+            var p = container.parent.parent.parent.parent;
+            var offSetX = p.transformMatrix[4] + container.parent.transformMatrix[4];
+            var offSetY = p.transformMatrix[5] + container.parent.transformMatrix[5];
             var scale = container.parent && container.transformMatrix ? container.parent.transformMatrix[0] : 1;
 
             if(shapes[0]) {
@@ -120,6 +118,13 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
                 shapes[len - 1][3][1] += container.transformMatrix[4];
                 shapes[len - 1][3][2] += container.transformMatrix[5];
             }
+        }
+
+        //svg特殊处理 父亲的父亲带有transform
+        if(container.node.nodeName === 'svg' && container.parent.node.className.indexOf && container.parent.node.className.indexOf('leaflet-overlay-pane') > -1) {
+            var svgOffsetX = container.parent.parent.transformMatrix[4];
+            var svgOffsetY = container.parent.parent.transformMatrix[5];
+            shapes[2] = calOffset(shapes[2], 1, svgOffsetX, svgOffsetY)
         }
         this.setTransform(container.inverseTransform());
         shapes.filter(hasEntries).forEach(function (shape) {

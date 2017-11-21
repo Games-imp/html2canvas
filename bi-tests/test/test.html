@@ -24,25 +24,17 @@
 <div class="demo">
     <div class="float">
         <div>
-            <button id="btn" style='position: absolute; top: 50px; left: 650px; z-index: 1000;'>html2canvas</button>
+            <button id="btn" style='position: absolute; top: 50px; left: 650px; z-index: 1000;line-height: 50px'>html2canvas</button>
             <div id="vessel" style='position: relative; width: 800px; height: 500px'></div>
         </div>
         <div>
             <img id='img_canvas'>
         </div>
         <div id='path_wrapper'>
-            <svg id = 'path' width="60" height="60" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0,30A30,30 0 1,1 0,-30A30,30 0 1,1 0,30Z" transform="translate(30,30)"
-                      style="stroke: rgb(29, 214, 223); stroke-opacity: 0; stroke-width: 0; fill: rgb(45, 192, 206); fill-opacity: 0.7; filter: url(&quot;#vancharts87&quot;);"></path>
-                <defs>
-                    <filter id="vancharts87" x="-50%" y="-50%" width="200%" height="200%">
-                        <feOffset in="SourceGraphic" dx="0" dy="0" result="offOut"></feOffset>
-                        <feColorMatrix in="offOut" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"
-                                       result="matrixOut"></feColorMatrix>
-                        <feGaussianBlur in="matrixOut" stdDeviation="2" result="blurOut"></feGaussianBlur>
-                        <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>
-                    </filter>
-                </defs>
+            <svg id = 'path' width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                <!--<path d="M0,30A30,30 0 1,1 0,-30A30,30 0 1,1 0,30Z" transform="translate(30,30)"-->
+                      <!--style="stroke: rgb(29, 214, 223); stroke-opacity: 0; stroke-width: 0; fill: rgb(45, 192, 206); fill-opacity: 0.7; filter: url(&quot;#vancharts87&quot;);"></path>-->
+                <path d="M0,30A30,30 0 1,1 0,-30A30,30 0 1,1 0,30Z" transform="translate(30,30)" style="stroke: rgb(3, 204, 215); stroke-opacity: 0; stroke-width: 0; fill: rgb(4, 177, 194); fill-opacity: 0.7;"></path>
             </svg>
         </div>
         <div>
@@ -88,6 +80,7 @@
         vessel.style.height = '500px';
         wrapper.resize();
         renderChart()
+//        renderPath();
     };
 
     //    container.src = "https://www.baidu.com";
