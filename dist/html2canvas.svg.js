@@ -4890,7 +4890,7 @@ if (typeof console !== 'undefined') {
       var pair = chunk.split(':');
 
       attr = pair[0].trim().toLowerCase();
-      value =  pair[1].trim();
+      value = attr === 'transform' ? pair[1].trim().replaceAll('px', '') : pair[1].trim();
 
       oStyle[attr] = value;
     });
