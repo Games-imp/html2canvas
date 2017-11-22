@@ -126,6 +126,11 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             var svgOffsetY = container.parent.parent.transformMatrix[5];
             shapes[2] = calOffset(shapes[2], 1, svgOffsetX, svgOffsetY)
         }
+        //BI-12304 图片数据标签特殊处理 （需要改)
+        if(container.node.nodeName === 'IMG' && container.parent && container.parent.parent
+            && container.parent.parent.node.className.indexOf && container.parent.parent.node.className.indexOf('chart-dataLabel') > -1) {
+            shapes = [];
+        }
         this.setTransform(container.inverseTransform());
         shapes.filter(hasEntries).forEach(function (shape) {
             this.shape(shape).clip();

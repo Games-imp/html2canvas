@@ -2048,9 +2048,8 @@ NodeParser.prototype.getChildren = function (parentContainer) {
         var container;
         if(node && node.nodeName === 'path') node.style.filter = "";
         container = [node.nodeType === Node.TEXT_NODE ? new TextContainer(node, parentContainer) : new NodeContainer(node, parentContainer)].filter(nonIgnoredElement);
-        //数据点提示的div在svg下面 不画数据点提示，画的话会出问题 && 查询重置按钮控件不导出
-        var isExcludeNodes = (node.previousSibling && node.previousSibling.tagName === 'svg') ||
-            (node && node.className && node.className.indexOf && (node.className.indexOf('bi-query-widget') > -1 || node.className.indexOf('bi-reset-widget') > -1));
+        //查询重置按钮控件不导出
+        var isExcludeNodes = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-query-widget') > -1 || node.className.indexOf('bi-reset-widget') > -1));
         //html2canvas不画text
         container = node.nodeName === "text" || isExcludeNodes ? [] : container;
         return node.nodeType === Node.ELEMENT_NODE && container.length && node.tagName !== "TEXTAREA" ? (container[0].isElementVisible() && !isExcludeNodes ? container.concat(this.getChildren(container[0])) : []) : container;
@@ -3135,6 +3134,11 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             var svgOffsetX = container.parent.parent.transformMatrix[4];
             var svgOffsetY = container.parent.parent.transformMatrix[5];
             shapes[2] = calOffset(shapes[2], 1, svgOffsetX, svgOffsetY)
+        }
+        //BI-12304 图片数据标签特殊处理 （需要改)
+        if(container.node.nodeName === 'IMG' && container.parent && container.parent.parent
+            && container.parent.parent.node.className.indexOf && container.parent.parent.node.className.indexOf('chart-dataLabel') > -1) {
+            shapes = [];
         }
         this.setTransform(container.inverseTransform());
         shapes.filter(hasEntries).forEach(function (shape) {
