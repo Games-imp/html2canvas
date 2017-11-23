@@ -3140,6 +3140,11 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             && container.parent.parent.node.className.indexOf && container.parent.parent.node.className.indexOf('chart-dataLabel') > -1) {
             shapes = [];
         }
+        //GIS地图的标记图片
+        if(container.node.nodeName === 'IMG' && container.node.className.indexOf('leaflet-marker-icon') > -1) {
+            delete shapes[1];
+            delete shapes[2];
+        }
         this.setTransform(container.inverseTransform());
         shapes.filter(hasEntries).forEach(function (shape) {
             this.shape(shape).clip();
