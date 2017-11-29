@@ -193,9 +193,7 @@ NodeParser.prototype.getChildren = function (parentContainer) {
         var isResetAndQueryButton = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-query-widget') > -1 || node.className.indexOf('bi-reset-widget') > -1));
         //web组件不导出
         var isWebWidget = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-web-page') > -1));
-        //gis的背景图层有问题 先exclude掉(比较恶心的是只能通过src中包含字符串域名来判断是否exclude)
-        var isGISBGImg = node && node.nodeName === 'IMG' && node.src.indexOf('http://map.geoq.cn/ArcGIS') > -1;
-        var isExcludeNodes = isResetAndQueryButton || isWebWidget || isGISBGImg;
+        var isExcludeNodes = isResetAndQueryButton || isWebWidget;
         //html2canvas不画text
         container = node.nodeName === "text" || isExcludeNodes ? [] : container;
         return node.nodeType === Node.ELEMENT_NODE && container.length && node.tagName !== "TEXTAREA" ? (container[0].isElementVisible() && !isExcludeNodes ? container.concat(this.getChildren(container[0])) : []) : container;

@@ -9,7 +9,8 @@ function ImageContainer(src, cors) {
         if (cors) {
             self.image.crossOrigin = "anonymous";
         }
-        self.image.src = src;
+        //BI-12645 chrome会缓存图片 canvas画缓存的图片会跨域
+        self.image.src = src + '?id=' + Math.random();
         if (self.image.complete === true) {
             resolve(self.image);
         }
