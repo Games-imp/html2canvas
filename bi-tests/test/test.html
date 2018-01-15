@@ -23,8 +23,15 @@
 
 <div class="demo">
     <div class="float">
+
         <div>
             <button id="btn" style='position: absolute; top: 50px; left: 650px; z-index: 1000;line-height: 50px'>html2canvas</button>
+            <iframe id="container" src = './text-test.html' style='width: 700px; height: 400px; margin-top: 50px;'></iframe>
+        </div>
+        <div>
+            <img id='iframe_canvas' style="margin-top: 50px">
+        </div>
+        <div>
             <div id="vessel" style='position: relative; width: 800px; height: 500px'></div>
         </div>
         <div>
@@ -52,12 +59,6 @@
         <div>
             <img id='textarea_canvas' style="margin-top: 50px">
         </div>
-        <div>
-            <iframe id="container" style='width: 700px; height: 400px; margin-top: 50px;'></iframe>
-        </div>
-        <div>
-            <img id='iframe_canvas' style="margin-top: 50px">
-        </div>
     </div>
 </div>
 
@@ -79,7 +80,8 @@
         vessel.style.width = '800px';
         vessel.style.height = '500px';
         wrapper.resize();
-        renderChart()
+        renderIframe();
+        // renderChart()
 //        renderPath();
     };
 
@@ -146,7 +148,7 @@
         renderChart();
         renderPath();
 //        renderTextArea();
-//        renderIframe();
+       renderIframe();
     };
 
 </script>

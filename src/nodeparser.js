@@ -192,8 +192,8 @@ NodeParser.prototype.getChildren = function (parentContainer) {
         //查询重置按钮控件不导出
         var isResetAndQueryButton = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-query-widget') > -1 || node.className.indexOf('bi-reset-widget') > -1));
         //web组件不导出
-        var isWebWidget = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-web-page') > -1));
-        var isExcludeNodes = isResetAndQueryButton || isWebWidget;
+        // var isWebWidget = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-web-page') > -1));
+        var isExcludeNodes = isResetAndQueryButton;
         //html2canvas不画text
         container = node.nodeName === "text" || isExcludeNodes ? [] : container;
         return node.nodeType === Node.ELEMENT_NODE && container.length && node.tagName !== "TEXTAREA" ? (container[0].isElementVisible() && !isExcludeNodes ? container.concat(this.getChildren(container[0])) : []) : container;

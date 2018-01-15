@@ -13,7 +13,9 @@ function FrameContainer(container, sameOrigin, options) {
                 resolve(container);
             };
         } else {
-            resolve(container);
+            setTimeout(function () {
+                resolve(container)
+            }, 1500);
         }
     })).then(function (container) {
         var html2canvas = require('./core');

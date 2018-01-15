@@ -1,6 +1,6 @@
 /*
   html2canvas 0.5.0-beta4 <http://html2canvas.hertzen.com>
-  Copyright (c) 2017 Niklas von Hertzen
+  Copyright (c) 2018 Niklas von Hertzen
 
   Released under  License
 */
@@ -955,6 +955,7 @@ function html2canvas(nodeList, options) {
     options.imageTimeout = typeof(options.imageTimeout) === "undefined" ? 10000 : options.imageTimeout;
     options.renderer = typeof(options.renderer) === "function" ? options.renderer : CanvasRenderer;
     options.strict = !!options.strict;
+    options.iframeTimeout = typeof(options.iframeTimeout) === "undefined" ? 1500 : options.iframeTimeout;
 
     if (typeof(nodeList) === "string") {
         if (typeof(options.proxy) !== "string") {
@@ -1197,7 +1198,9 @@ function FrameContainer(container, sameOrigin, options) {
                 resolve(container);
             };
         } else {
-            resolve(container);
+            setTimeout(function () {
+                resolve(container)
+            }, 1500);
         }
     })).then(function (container) {
         var html2canvas = _dereq_('./core');
@@ -2053,8 +2056,8 @@ NodeParser.prototype.getChildren = function (parentContainer) {
         //查询重置按钮控件不导出
         var isResetAndQueryButton = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-query-widget') > -1 || node.className.indexOf('bi-reset-widget') > -1));
         //web组件不导出
-        var isWebWidget = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-web-page') > -1));
-        var isExcludeNodes = isResetAndQueryButton || isWebWidget;
+        // var isWebWidget = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-web-page') > -1));
+        var isExcludeNodes = isResetAndQueryButton;
         //html2canvas不画text
         container = node.nodeName === "text" || isExcludeNodes ? [] : container;
         return node.nodeType === Node.ELEMENT_NODE && container.length && node.tagName !== "TEXTAREA" ? (container[0].isElementVisible() && !isExcludeNodes ? container.concat(this.getChildren(container[0])) : []) : container;

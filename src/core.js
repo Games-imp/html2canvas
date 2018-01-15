@@ -30,6 +30,7 @@ function html2canvas(nodeList, options) {
     options.imageTimeout = typeof(options.imageTimeout) === "undefined" ? 10000 : options.imageTimeout;
     options.renderer = typeof(options.renderer) === "function" ? options.renderer : CanvasRenderer;
     options.strict = !!options.strict;
+    options.iframeTimeout = typeof(options.iframeTimeout) === "undefined" ? 1500 : options.iframeTimeout;
 
     if (typeof(nodeList) === "string") {
         if (typeof(options.proxy) !== "string") {
