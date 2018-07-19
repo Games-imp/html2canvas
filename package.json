@@ -49,5 +49,8 @@
     "sauceconnect": "tests/sauceconnect.js"
   },
   "homepage": "http://html2canvas.hertzen.com",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "npm": "^6.2.0"
+  }
 }
