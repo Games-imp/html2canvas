@@ -193,9 +193,11 @@ NodeParser.prototype.getChildren = function (parentContainer) {
         var isResetAndQueryButton = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-query-widget') > -1 || node.className.indexOf('bi-reset-widget') > -1));
         //web组件不导出
         // var isWebWidget = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-web-page') > -1));
+        // CUSTBUG-19695 柱形图柱子太多 导出卡
+        var zeroHeightAndWidthSvgNode = (node && (getBounds(node).width === 0 || getBounds(node).height === 0));
         var isExcludeNodes = isResetAndQueryButton;
         //html2canvas不画text
-        container = node.nodeName === "text" || isExcludeNodes ? [] : container;
+        container = node.nodeName === "text" || isExcludeNodes || zeroHeightAndWidthSvgNode ? [] : container;
         return node.nodeType === Node.ELEMENT_NODE && container.length && node.tagName !== "TEXTAREA" ? (container[0].isElementVisible() && !isExcludeNodes ? container.concat(this.getChildren(container[0])) : []) : container;
     }, this));
 };
