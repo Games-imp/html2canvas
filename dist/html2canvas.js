@@ -2311,7 +2311,11 @@ NodeParser.prototype.paintFormValue = function (container) {
 NodeParser.prototype.paintText = function (container) {
     container.applyTextTransform();
     var characters = punycode.ucs2.decode(container.node.data);
-    var textList = (!this.options.letterRendering || noLetterSpacing(container)) && !hasUnicode(container.node.data) ? getWords(characters) : characters.map(function (character) {
+    // var textList = (!this.options.letterRendering || noLetterSpacing(container)) && !hasUnicode(container.node.data) ? getWords(characters) : characters.map(function (character) {
+    //     return punycode.ucs2.encode([character]);
+    // });
+    // BI-26625 https://github.com/niklasvh/html2canvas/issues/664
+    var textList = characters.map(function(character) {
         return punycode.ucs2.encode([character]);
     });
 
