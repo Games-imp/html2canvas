@@ -81,8 +81,7 @@ module.exports = function(grunt) {
             server: {
                 options: {
                     port: 8079,
-                    base: './',
-                    keepalive: true
+                    base: './'
                 }
             },
             altServer: {
@@ -159,17 +158,11 @@ module.exports = function(grunt) {
         watch: {
             scripts: {
                 files: ['src/**/*.js', '!src/fabric/**/*'],
-                tasks: ['build'],
+                tasks: ['execute', 'browserify', 'uglify'],
                 options: {
                     spanw: true,
                     interrupt: true
                 }
-            },
-            livereload: {
-                options: {
-                    livereload: "<%= connect.options.livereload %>"
-                },
-                files: ['src/**/*.js', '!src/fabric/**/*']
             }
         },
         jshint: {
