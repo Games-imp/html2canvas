@@ -93,7 +93,7 @@ module.exports = function(grunt) {
             },
             cors: {
                 options: {
-                    port: 8081,
+                    port: 8089,
                     base: './',
                     middleware:  function(connect, options) {
                         return [
@@ -157,8 +157,20 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: ['src/**/*', '!src/fabric/**/*'],
-            tasks: ['jshint', 'build']
+            scripts: {
+                files: ['src/**/*.js', '!src/fabric/**/*'],
+                tasks: ['build'],
+                options: {
+                    spanw: true,
+                    interrupt: true
+                }
+            },
+            livereload: {
+                options: {
+                    livereload: "<%= connect.options.livereload %>"
+                },
+                files: ['src/**/*.js', '!src/fabric/**/*']
+            }
         },
         jshint: {
             all: ['src/*.js', 'src/renderers/*.js'],
@@ -209,8 +221,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-execute');
     grunt.loadNpmTasks('grunt-mocha-cli');
 
-    grunt.registerTask('server', ['connect:cors', 'connect:proxy', 'connect:altServer', 'connect:server']);
     grunt.registerTask('build', ['execute', 'browserify', 'uglify']);
+    grunt.registerTask('server', ['connect', 'watch']);
     grunt.registerTask('default', ['jshint', 'build', 'mochacli', 'connect:altServer', 'mocha_phantomjs']);
     grunt.registerTask('travis', ['jshint', 'build', 'connect:altServer', 'connect:ci', 'connect:proxy', 'connect:cors', 'mocha_phantomjs', 'webdriver']);
 

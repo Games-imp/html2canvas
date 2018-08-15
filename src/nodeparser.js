@@ -194,7 +194,7 @@ NodeParser.prototype.getChildren = function (parentContainer) {
         //web组件不导出
         // var isWebWidget = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-web-page') > -1));
         // CUSTBUG-19695 柱形图柱子太多 导出卡
-        var zeroHeightAndWidthSvgNode = (node && (getBounds(node).width === 0 || getBounds(node).height === 0));
+        var zeroHeightAndWidthSvgNode = (node && (node.tagName === "rect") && (getBounds(node).width === 0 || getBounds(node).height === 0));
         var isExcludeNodes = isResetAndQueryButton;
         //html2canvas不画text
         container = node.nodeName === "text" || isExcludeNodes || zeroHeightAndWidthSvgNode ? [] : container;
