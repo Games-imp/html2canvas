@@ -1199,7 +1199,7 @@ function FrameContainer(container, sameOrigin, options) {
             };
         } else {
             setTimeout(function () {
-                resolve(container)
+                resolve(container);
             }, 1500);
         }
     })).then(function (container) {
@@ -1263,9 +1263,9 @@ function ImageContainer(src, cors) {
         }
         //BI-12645 chrome会缓存图片 canvas画缓存的图片会跨域
         var mark = src.indexOf && src.indexOf("?") > -1 ? "&" : "?";
-        // self.image.src = src + mark + 'id=' + Math.random();
+        self.image.src = src + mark + 'id=' + Math.random();
         // BI-26932 5.0地图图片截图
-        self.image.src = src;
+        // self.image.src = src;
         if (self.image.complete === true) {
             resolve(self.image);
         }
@@ -2053,7 +2053,9 @@ NodeParser.prototype.getPseudoElement = function (container, type) {
 NodeParser.prototype.getChildren = function (parentContainer) {
     return flatten([].filter.call(parentContainer.node.childNodes, renderableNode).map(function (node) {
         var container;
-        if(node && node.nodeName === 'path') node.style.filter = "";
+        if (node && node.nodeName === 'path') {
+            node.style.filter = "";
+        }
         container = [node.nodeType === Node.TEXT_NODE ? new TextContainer(node, parentContainer) : new NodeContainer(node, parentContainer)].filter(nonIgnoredElement);
         //查询重置按钮控件不导出
         var isResetAndQueryButton = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-query-widget') > -1 || node.className.indexOf('bi-reset-widget') > -1));
@@ -2315,7 +2317,7 @@ NodeParser.prototype.paintText = function (container) {
     //     return punycode.ucs2.encode([character]);
     // });
     // BI-26625 https://github.com/niklasvh/html2canvas/issues/664
-    var textList = characters.map(function(character) {
+    var textList = characters.map(function (character) {
         return punycode.ucs2.encode([character]);
     });
 
@@ -3095,7 +3097,7 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
 
     if (container && container.hasTransform()) {
         var len = shapes.length;
-        function calOffset (shape, scale, offSetX, offSetY) {
+        var calOffset = function (shape, scale, offSetX, offSetY) {
             var temp = [];
             for (var i = 0, currShapeLen = shape.length; i < currShapeLen; i++) {
                 var arr = [];
@@ -3115,7 +3117,7 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             temp[3][1] -= offSetX / scale;
             temp[3][2] -= offSetY / scale;
             return temp;
-        }
+        };
         //BI-11228 地图图层的特殊处理
         var isMapBGImage = container.node.nodeName === 'IMG' && container.node.parentNode.className.indexOf('leaflet-tile-container') > -1;
         if (isMapBGImage) {
@@ -3125,10 +3127,10 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             var scale = container.parent && container.transformMatrix ? container.parent.transformMatrix[0] : 1;
 
             if(shapes[0]) {
-                shapes[0] = calOffset(shapes[0], scale, offSetX, offSetY)
+                shapes[0] = calOffset(shapes[0], scale, offSetX, offSetY);
             }
             if (shapes[1]) {
-                shapes[1] = calOffset(shapes[1], scale, offSetX, offSetY)
+                shapes[1] = calOffset(shapes[1], scale, offSetX, offSetY);
             }
 
             if (shapes[len - 1]) {
@@ -3147,11 +3149,10 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
         if(container.node.nodeName === 'svg' && container.parent.node.className.indexOf && container.parent.node.className.indexOf('leaflet-overlay-pane') > -1) {
             var svgOffsetX = container.parent.parent.transformMatrix[4];
             var svgOffsetY = container.parent.parent.transformMatrix[5];
-            shapes[2] = calOffset(shapes[2], 1, svgOffsetX, svgOffsetY)
+            shapes[2] = calOffset(shapes[2], 1, svgOffsetX, svgOffsetY);
         }
         //BI-12304 图片数据标签特殊处理 （需要改)
-        if(container.node.nodeName === 'IMG' && container.parent && container.parent.parent
-            && container.parent.parent.node.className.indexOf && container.parent.parent.node.className.indexOf('chart-dataLabel') > -1) {
+        if(container.node.nodeName === 'IMG' && container.parent && container.parent.parent && container.parent.parent.node.className.indexOf && container.parent.parent.node.className.indexOf('chart-dataLabel') > -1) {
             shapes = [];
         }
         //GIS地图的标记图片
@@ -3594,7 +3595,7 @@ exports.offsetBounds = function (node, matrix) {
 
     if (node.tagName === 'svg' || node.tagName === 'path') {
         var bounds = exports.getBounds(node);
-        if(exports.isEmptyObject(bounds)) {
+        if (exports.isEmptyObject(bounds)) {
             return bounds;
         }
 
@@ -3718,9 +3719,10 @@ exports.parseBackgrounds = function (backgroundImage) {
 
 exports.isEmptyObject = function isEmptyObject(e) {
     var t;
-    for (t in e)
+    for (t in e) {
         return !1;
-    return !0
+    }
+    return !0;
 };
 
 },{}],27:[function(_dereq_,module,exports){

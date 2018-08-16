@@ -123,7 +123,7 @@ exports.offsetBounds = function (node, matrix) {
 
     if (node.tagName === 'svg' || node.tagName === 'path') {
         var bounds = exports.getBounds(node);
-        if(exports.isEmptyObject(bounds)) {
+        if (exports.isEmptyObject(bounds)) {
             return bounds;
         }
 
@@ -247,7 +247,8 @@ exports.parseBackgrounds = function (backgroundImage) {
 
 exports.isEmptyObject = function isEmptyObject(e) {
     var t;
-    for (t in e)
+    for (t in e) {
         return !1;
-    return !0
+    }
+    return !0;
 };

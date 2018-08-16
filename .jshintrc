@@ -13,7 +13,11 @@
     "node": true,
     "indent": 4,
     "globals": {
-      "jQuery": true
+        "jQuery": true,
+        "BI": true
     },
-    "predef": ["Promise", "define"]
+    "predef": [
+        "Promise",
+        "define"
+    ]
 }

@@ -187,7 +187,9 @@ NodeParser.prototype.getPseudoElement = function (container, type) {
 NodeParser.prototype.getChildren = function (parentContainer) {
     return flatten([].filter.call(parentContainer.node.childNodes, renderableNode).map(function (node) {
         var container;
-        if(node && node.nodeName === 'path') node.style.filter = "";
+        if (node && node.nodeName === 'path') {
+            node.style.filter = "";
+        }
         container = [node.nodeType === Node.TEXT_NODE ? new TextContainer(node, parentContainer) : new NodeContainer(node, parentContainer)].filter(nonIgnoredElement);
         //查询重置按钮控件不导出
         var isResetAndQueryButton = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-query-widget') > -1 || node.className.indexOf('bi-reset-widget') > -1));
@@ -449,7 +451,7 @@ NodeParser.prototype.paintText = function (container) {
     //     return punycode.ucs2.encode([character]);
     // });
     // BI-26625 https://github.com/niklasvh/html2canvas/issues/664
-    var textList = characters.map(function(character) {
+    var textList = characters.map(function (character) {
         return punycode.ucs2.encode([character]);
     });
 

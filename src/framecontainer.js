@@ -14,7 +14,7 @@ function FrameContainer(container, sameOrigin, options) {
             };
         } else {
             setTimeout(function () {
-                resolve(container)
+                resolve(container);
             }, 1500);
         }
     })).then(function (container) {

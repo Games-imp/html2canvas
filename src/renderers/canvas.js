@@ -72,7 +72,7 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
 
     if (container && container.hasTransform()) {
         var len = shapes.length;
-        function calOffset (shape, scale, offSetX, offSetY) {
+        var calOffset = function (shape, scale, offSetX, offSetY) {
             var temp = [];
             for (var i = 0, currShapeLen = shape.length; i < currShapeLen; i++) {
                 var arr = [];
@@ -92,7 +92,7 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             temp[3][1] -= offSetX / scale;
             temp[3][2] -= offSetY / scale;
             return temp;
-        }
+        };
         //BI-11228 地图图层的特殊处理
         var isMapBGImage = container.node.nodeName === 'IMG' && container.node.parentNode.className.indexOf('leaflet-tile-container') > -1;
         if (isMapBGImage) {
@@ -102,10 +102,10 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             var scale = container.parent && container.transformMatrix ? container.parent.transformMatrix[0] : 1;
 
             if(shapes[0]) {
-                shapes[0] = calOffset(shapes[0], scale, offSetX, offSetY)
+                shapes[0] = calOffset(shapes[0], scale, offSetX, offSetY);
             }
             if (shapes[1]) {
-                shapes[1] = calOffset(shapes[1], scale, offSetX, offSetY)
+                shapes[1] = calOffset(shapes[1], scale, offSetX, offSetY);
             }
 
             if (shapes[len - 1]) {
@@ -124,11 +124,10 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
         if(container.node.nodeName === 'svg' && container.parent.node.className.indexOf && container.parent.node.className.indexOf('leaflet-overlay-pane') > -1) {
             var svgOffsetX = container.parent.parent.transformMatrix[4];
             var svgOffsetY = container.parent.parent.transformMatrix[5];
-            shapes[2] = calOffset(shapes[2], 1, svgOffsetX, svgOffsetY)
+            shapes[2] = calOffset(shapes[2], 1, svgOffsetX, svgOffsetY);
         }
         //BI-12304 图片数据标签特殊处理 （需要改)
-        if(container.node.nodeName === 'IMG' && container.parent && container.parent.parent
-            && container.parent.parent.node.className.indexOf && container.parent.parent.node.className.indexOf('chart-dataLabel') > -1) {
+        if(container.node.nodeName === 'IMG' && container.parent && container.parent.parent && container.parent.parent.node.className.indexOf && container.parent.parent.node.className.indexOf('chart-dataLabel') > -1) {
             shapes = [];
         }
         //GIS地图的标记图片
