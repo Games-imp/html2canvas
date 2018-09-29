@@ -1262,6 +1262,7 @@ function ImageContainer(src, cors) {
             self.image.crossOrigin = "anonymous";
         }
         //BI-12645 chrome会缓存图片 canvas画缓存的图片会跨域
+        // map图层url地址:http://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/4/5/12?id=0.6722192951906847
         var mark = src.indexOf && src.indexOf("?") > -1 ? "&" : "?";
         self.image.src = src + mark + 'id=' + Math.random();
         // BI-26932 5.0地图图片截图
@@ -1898,7 +1899,7 @@ function NodeParser(element, renderer, support, imageLoader, options) {
     parent.visibile = parent.isElementVisible();
     this.createPseudoHideStyles(element.ownerDocument);
     this.disableAnimations(element.ownerDocument);
-    this.nodes = flatten([parent].concat(this.getChildren(parent)).filter(function (container) {
+    this.nodes = flatten(flatten([parent, this.getChildren(parent)]).filter(function (container) {
         return container.visible = container.isElementVisible();
     }).map(this.getPseudoElements, this));
     this.fontMetrics = new FontMetrics();
@@ -2052,19 +2053,8 @@ NodeParser.prototype.getPseudoElement = function (container, type) {
 
 NodeParser.prototype.getChildren = function (parentContainer) {
     return flatten([].filter.call(parentContainer.node.childNodes, renderableNode).map(function (node) {
-        var container;
-        if (node && node.nodeName === 'path') {
-            node.style.filter = "";
-        }
-        container = [node.nodeType === Node.TEXT_NODE ? new TextContainer(node, parentContainer) : new NodeContainer(node, parentContainer)].filter(nonIgnoredElement);
-        //查询重置按钮控件不导出
-        var isResetAndQueryButton = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-query-widget') > -1 || node.className.indexOf('bi-reset-widget') > -1));
-        //web组件不导出
-        // var isWebWidget = (node && node.className && node.className.indexOf && (node.className.indexOf('bi-web-page') > -1));
-        var isExcludeNodes = isResetAndQueryButton;
-        //html2canvas不画text
-        container = node.nodeName === "text" || isExcludeNodes ? [] : container;
-        return node.nodeType === Node.ELEMENT_NODE && container.length && node.tagName !== "TEXTAREA" ? (container[0].isElementVisible() && !isExcludeNodes ? container.concat(this.getChildren(container[0])) : []) : container;
+        var container = [node.nodeType === Node.TEXT_NODE ? new TextContainer(node, parentContainer) : new NodeContainer(node, parentContainer)].filter(nonIgnoredElement);
+        return node.nodeType === Node.ELEMENT_NODE && container.length && node.tagName !== "TEXTAREA" ? (container[0].isElementVisible() ? container.concat(this.getChildren(container[0])) : []) : container;
     }, this));
 };
 
@@ -2081,7 +2071,8 @@ NodeParser.prototype.createStackingContexts = function () {
         if (isElement(container) && (this.isRootElement(container) || hasOpacity(container) || isPositionedForStacking(container) || this.isBodyWithTransparentRoot(container) || container.hasTransform())) {
             this.newStackingContext(container, true);
         } else if (isElement(container) && ((isPositioned(container) && zIndex0(container)) || isInlineBlock(container) || isFloating(container))) {
-            this.newStackingContext(container, false);
+            // 这里的第二个参数由false改成true
+            this.newStackingContext(container, true);
         } else {
             container.assignStack(container.parent.stack);
         }
@@ -2700,7 +2691,10 @@ function getWidth(border) {
 }
 
 function nonIgnoredElement(nodeContainer) {
-    return (nodeContainer.node.nodeType !== Node.ELEMENT_NODE || ["SCRIPT", "HEAD", "TITLE", "OBJECT", "BR", "OPTION"].indexOf(nodeContainer.node.nodeName) === -1);
+    return (nodeContainer.node.nodeType !== Node.ELEMENT_NODE ||
+        ["SCRIPT", "HEAD", "TITLE", "OBJECT", "BR", "OPTION"].indexOf(nodeContainer.node.nodeName) === -1) &&
+        //查询重置按钮控件不导出
+        !(nodeContainer.node.className && nodeContainer.node.className.match && nodeContainer.node.className.match(/bi-design-widget-query|bi-design-reset-widget/) !== null);
 }
 
 function flatten(arrays) {
@@ -3145,12 +3139,6 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             }
         }
 
-        //svg特殊处理 父亲的父亲带有transform
-        if(container.node.nodeName === 'svg' && container.parent.node.className.indexOf && container.parent.node.className.indexOf('leaflet-overlay-pane') > -1) {
-            var svgOffsetX = container.parent.parent.transformMatrix[4];
-            var svgOffsetY = container.parent.parent.transformMatrix[5];
-            shapes[2] = calOffset(shapes[2], 1, svgOffsetX, svgOffsetY);
-        }
         //BI-12304 图片数据标签特殊处理 （需要改)
         if(container.node.nodeName === 'IMG' && container.parent && container.parent.parent && container.parent.parent.node.className.indexOf && container.parent.parent.node.className.indexOf('chart-dataLabel') > -1) {
             shapes = [];

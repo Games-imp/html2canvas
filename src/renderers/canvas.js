@@ -120,12 +120,6 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             }
         }
 
-        //svg特殊处理 父亲的父亲带有transform
-        if(container.node.nodeName === 'svg' && container.parent.node.className.indexOf && container.parent.node.className.indexOf('leaflet-overlay-pane') > -1) {
-            var svgOffsetX = container.parent.parent.transformMatrix[4];
-            var svgOffsetY = container.parent.parent.transformMatrix[5];
-            shapes[2] = calOffset(shapes[2], 1, svgOffsetX, svgOffsetY);
-        }
         //BI-12304 图片数据标签特殊处理 （需要改)
         if(container.node.nodeName === 'IMG' && container.parent && container.parent.parent && container.parent.parent.node.className.indexOf && container.parent.parent.node.className.indexOf('chart-dataLabel') > -1) {
             shapes = [];
