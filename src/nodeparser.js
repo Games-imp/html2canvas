@@ -194,7 +194,7 @@ NodeParser.prototype.getChildren = function (parentContainer) {
 NodeParser.prototype.newStackingContext = function (container, hasOwnStacking) {
     var stack = new StackingContext(hasOwnStacking, container.getOpacity(), container.node, container.parent);
     container.cloneTo(stack);
-    var parentStack = hasOwnStacking ? stack.getParentStack(this) : stack.parent.stack;
+    var parentStack = hasOwnStacking || isPositioned(container) ? stack.getParentStack(this) : stack.parent.stack;
     parentStack.contexts.push(stack);
     container.stack = stack;
 };
@@ -204,7 +204,6 @@ NodeParser.prototype.createStackingContexts = function () {
         if (isElement(container) && (this.isRootElement(container) || hasOpacity(container) || isPositionedForStacking(container) || this.isBodyWithTransparentRoot(container) || container.hasTransform())) {
             this.newStackingContext(container, true);
         } else if (isElement(container) && ((isPositioned(container) && zIndex0(container)) || isInlineBlock(container) || isFloating(container))) {
-            // 这里的第二个参数由false改成true
             this.newStackingContext(container, false);
         } else {
             container.assignStack(container.parent.stack);
