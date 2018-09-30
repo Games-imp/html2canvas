@@ -194,6 +194,7 @@ NodeParser.prototype.getChildren = function (parentContainer) {
 NodeParser.prototype.newStackingContext = function (container, hasOwnStacking) {
     var stack = new StackingContext(hasOwnStacking, container.getOpacity(), container.node, container.parent);
     container.cloneTo(stack);
+    // 处理了地图图层遮盖了地图的canvas，参考html2canvas的es6版本和css的文档，发现这里如果position不是static就要去找真正的parent
     var parentStack = hasOwnStacking || isPositioned(container) ? stack.getParentStack(this) : stack.parent.stack;
     parentStack.contexts.push(stack);
     container.stack = stack;
