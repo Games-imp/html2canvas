@@ -205,7 +205,7 @@ NodeParser.prototype.createStackingContexts = function () {
             this.newStackingContext(container, true);
         } else if (isElement(container) && ((isPositioned(container) && zIndex0(container)) || isInlineBlock(container) || isFloating(container))) {
             // 这里的第二个参数由false改成true
-            this.newStackingContext(container, true);
+            this.newStackingContext(container, false);
         } else {
             container.assignStack(container.parent.stack);
         }
