@@ -3112,7 +3112,7 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             temp[3][2] -= offSetY / scale;
             return temp;
         };
-        //BI-11228 地图图层的特殊处理
+        //BI-11228 leaflet地图图层的特殊处理
         var isMapBGImage = container.node.nodeName === 'IMG' && container.node.parentNode.className.indexOf('leaflet-tile-container') > -1;
         if (isMapBGImage) {
             var p = container.parent.parent.parent.parent;
@@ -3120,7 +3120,7 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             var offSetY = p.transformMatrix[5] + container.parent.transformMatrix[5];
             var scale = container.parent && container.transformMatrix ? container.parent.transformMatrix[0] : 1;
 
-            if(shapes[0]) {
+            if (shapes[0]) {
                 shapes[0] = calOffset(shapes[0], scale, offSetX, offSetY);
             }
             if (shapes[1]) {
@@ -3138,18 +3138,18 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
                 shapes[len - 1][3][2] += container.transformMatrix[5];
             }
         }
-
-        //BI-12304 图片数据标签特殊处理 （需要改)
-        if(container.node.nodeName === 'IMG' && container.parent && container.parent.parent && container.parent.parent.node.className.indexOf && container.parent.parent.node.className.indexOf('chart-dataLabel') > -1) {
-            shapes = [];
-        }
-        //GIS地图的标记图片
-        if(container.node.nodeName === 'IMG' && container.node.className.indexOf('leaflet-marker-icon') > -1) {
-            delete shapes[1];
-            delete shapes[2];
-        }
+        var isMaptile = container.node.className.indexOf('leaflet-tile-container') > -1;
         this.setTransform(container.inverseTransform());
         shapes.filter(hasEntries).forEach(function (shape) {
+            if (isMaptile) {
+                // class为leaflet-tile-container的元素css中有scale属性，有缩放会使地图显示不全。
+                var w = shape[1][1] - shape[0][1];
+                var gap = ((w) / container.transformMatrix[0]) - w;
+                shape[1][1] += gap;
+                shape[2][1] += gap;
+                shape[2][2] += gap;
+                shape[3][2] += gap;
+            }
             this.shape(shape).clip();
         }, this);
         this.setTransform(container.parseTransform());
