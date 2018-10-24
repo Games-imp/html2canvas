@@ -10,8 +10,11 @@ function ImageContainer(src, cors) {
             self.image.crossOrigin = "anonymous";
         }
         //BI-12645 chrome会缓存图片 canvas画缓存的图片会跨域
-        var mark = src.indexOf && src.indexOf("?") > -1 ? "&" : "?";
-        self.image.src = src + mark + 'id=' + Math.random();
+        // wangjun的mapbox 服务器不支持参数id
+        if (src.indexOf("wangjun") === -1) {
+            var mark = src.indexOf && src.indexOf("?") > -1 ? "&" : "?";
+            self.image.src = src + mark + 'id=' + Math.random();
+        }
         // self.image.src = src;
         if (self.image.complete === true) {
             resolve(self.image);

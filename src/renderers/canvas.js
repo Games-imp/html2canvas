@@ -136,7 +136,7 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
             delete shapes[1];
             delete shapes[2];
         }
-        var isMaptile = container.node.className.indexOf('leaflet-tile-container') > -1;
+        var isMaptile = container.node.className.indexOf && container.node.className.indexOf('leaflet-tile-container') > -1;
         this.setTransform(container.inverseTransform());
         shapes.filter(hasEntries).forEach(function (shape) {
             if (isMaptile) {

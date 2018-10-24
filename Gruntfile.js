@@ -126,7 +126,7 @@ module.exports = function(grunt) {
             },
             ci: {
                 options: {
-                    port: 8080,
+                    port: 8070,
                     base: './'
                 }
             }
