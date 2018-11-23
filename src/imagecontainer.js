@@ -15,10 +15,11 @@ function ImageContainer(src, cors) {
         if (src.indexOf("wangjun") === -1) {
             var mark = src.indexOf && src.indexOf("?") > -1 ? "&" : "?";
             self.image.src = src + mark + 'id=' + Math.random();
+        } else {
+            // BI-26932 5.0地图图片截图
+            self.image.src = src;
         }
 
-        // BI-26932 5.0地图图片截图
-        // self.image.src = src;
         if (self.image.complete === true) {
             resolve(self.image);
         }
