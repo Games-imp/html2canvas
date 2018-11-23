@@ -14,8 +14,9 @@ function ImageContainer(src, cors) {
         if (src.indexOf("wangjun") === -1) {
             var mark = src.indexOf && src.indexOf("?") > -1 ? "&" : "?";
             self.image.src = src + mark + 'id=' + Math.random();
+        } else {
+            self.image.src = src;
         }
-        // self.image.src = src;
         if (self.image.complete === true) {
             resolve(self.image);
         }

@@ -1266,8 +1266,9 @@ function ImageContainer(src, cors) {
         if (src.indexOf("wangjun") === -1) {
             var mark = src.indexOf && src.indexOf("?") > -1 ? "&" : "?";
             self.image.src = src + mark + 'id=' + Math.random();
+        } else {
+            self.image.src = src;
         }
-        // self.image.src = src;
         if (self.image.complete === true) {
             resolve(self.image);
         }
@@ -3162,15 +3163,15 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
         var isMaptile = container.node.className.indexOf && container.node.className.indexOf('leaflet-tile-container') > -1;
         this.setTransform(container.inverseTransform());
         shapes.filter(hasEntries).forEach(function (shape) {
-            if (isMaptile) {
-                // class为leaflet-tile-container的元素css中有scale属性，有缩放会使地图显示不全。
-                var w = shape[1][1] - shape[0][1];
-                var gap = ((w) / container.transformMatrix[0]) - w;
-                shape[1][1] += gap;
-                shape[2][1] += gap;
-                shape[2][2] += gap;
-                shape[3][2] += gap;
-            }
+            // if (isMaptile) {
+            //     // class为leaflet-tile-container的元素css中有scale属性，有缩放会使地图显示不全。
+            //     var w = shape[1][1] - shape[0][1];
+            //     var gap = ((w) / container.transformMatrix[0]) - w;
+            //     shape[1][1] += gap;
+            //     shape[2][1] += gap;
+            //     shape[2][2] += gap;
+            //     shape[3][2] += gap;
+            // }
             this.shape(shape).clip();
         }, this);
         this.setTransform(container.parseTransform());
