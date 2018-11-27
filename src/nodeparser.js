@@ -827,7 +827,7 @@ function nonIgnoredElement(nodeContainer) {
     return (nodeContainer.node.nodeType !== Node.ELEMENT_NODE ||
         ["SCRIPT", "HEAD", "TITLE", "OBJECT", "BR", "OPTION"].indexOf(nodeContainer.node.nodeName) === -1) &&
         //查询重置按钮控件不导出
-        !(nodeContainer.node.className && nodeContainer.node.className.match && nodeContainer.node.className.match(/bi-design-widget-query|bi-design-reset-widget/) !== null);
+        !(nodeContainer.node.className && nodeContainer.node.className.match && nodeContainer.node.className.match(/bi-design-widget-query|bi-design-widget-reset/) !== null);
 }
 
 function flatten(arrays) {
