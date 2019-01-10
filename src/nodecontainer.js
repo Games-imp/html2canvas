@@ -55,11 +55,30 @@ NodeContainer.prototype.isElementVisible = function () {
 };
 
 NodeContainer.prototype.css = function (attribute) {
+    if (this.hasFontParent(this.parent) && ["textDecorationLine", "fontStyle", "fontWight"].contains(attribute)) {
+        switch(this.node.nodeName) {
+            case "I":
+                return "italic";
+            case "U":
+                return "underline";
+            case "B":
+                return "700";
+            default:
+                break;
+        }
+    }
     if (!this.computedStyles) {
         this.computedStyles = this.isPseudoElement ? this.parent.computedStyle(this.before ? ":before" : ":after") : this.computedStyle(null);
     }
 
     return this.styles[attribute] || (this.styles[attribute] = this.computedStyles[attribute]);
+};
+
+NodeContainer.prototype.hasFontParent = function (node) {
+    function isFont (n) {
+        return n && n.nodeName && n.nodeName === "FONT";
+    }
+    return isFont(node) || (node && node.parent && isFont(node.parent)) || (node && node.parent && node.parent.parent && isFont(node.parent.parent));
 };
 
 NodeContainer.prototype.prefixedCss = function (attribute) {
