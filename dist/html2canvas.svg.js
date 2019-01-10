@@ -1,6 +1,6 @@
 /*
   html2canvas 0.5.0-beta4 <http://html2canvas.hertzen.com>
-  Copyright (c) 2018 Niklas von Hertzen
+  Copyright (c) 2019 Niklas von Hertzen
 
   Released under  License
 */
@@ -4543,59 +4543,84 @@ if (typeof console !== 'undefined') {
 
 
 (function(global) {
-
-  'use strict';
+  "use strict";
 
   /**
    * @name fabric
    * @namespace
    */
 
-  var fabric = global.fabric || (global.fabric = { }),
-      extend = fabric.util.object.extend,
-      clone = fabric.util.object.clone,
-      toFixed = fabric.util.toFixed,
-      parseUnit = fabric.util.parseUnit,
-      multiplyTransformMatrices = fabric.util.multiplyTransformMatrices,
-      //有tspan的text特殊处理
-      svgValidTagNames = ['path', 'circle', 'polygon', 'polyline', 'ellipse', 'rect', 'line',
-        'image', 'text', 'linearGradient', 'radialGradient', 'stop', 'tspan'],
-      svgViewBoxElements = ['symbol', 'image', 'marker', 'pattern', 'view', 'svg'],
-      svgInvalidAncestors = ['pattern', 'defs', 'symbol', 'metadata', 'clipPath', 'mask', 'desc'],
-      svgValidParents = ['symbol', 'g', 'a'],//BI-9820 多了个svg ie9 bug
-      tspanValidParents = svgValidParents.concat('text'),
-
-      attributesMap = {
-        cx:                   'left',
-        x:                    'left',
-        r:                    'radius',
-        cy:                   'top',
-        y:                    'top',
-        display:              'visible',
-        visibility:           'visible',
-        transform:            'transformMatrix',
-        'fill-opacity':       'fillOpacity',
-        'fill-rule':          'fillRule',
-        'font-family':        'fontFamily',
-        'font-size':          'fontSize',
-        'font-style':         'fontStyle',
-        'font-weight':        'fontWeight',
-        'paint-order':        'paintFirst',
-        'stroke-dasharray':   'strokeDashArray',
-        'stroke-linecap':     'strokeLineCap',
-        'stroke-linejoin':    'strokeLineJoin',
-        'stroke-miterlimit':  'strokeMiterLimit',
-        'stroke-opacity':     'strokeOpacity',
-        'stroke-width':       'strokeWidth',
-        'text-decoration':    'textDecoration',
-        'text-anchor':        'textAnchor',
-        opacity:              'opacity'
-      },
-
-      colorAttributes = {
-        stroke: 'strokeOpacity',
-        fill:   'fillOpacity'
-      };
+  var fabric = global.fabric || (global.fabric = {}),
+    extend = fabric.util.object.extend,
+    clone = fabric.util.object.clone,
+    toFixed = fabric.util.toFixed,
+    parseUnit = fabric.util.parseUnit,
+    multiplyTransformMatrices = fabric.util.multiplyTransformMatrices,
+    //有tspan的text特殊处理
+    svgValidTagNames = [
+      "path",
+      "circle",
+      "polygon",
+      "polyline",
+      "ellipse",
+      "rect",
+      "line",
+      "image",
+      "text",
+      "linearGradient",
+      "radialGradient",
+      "stop",
+      "tspan"
+    ],
+    svgViewBoxElements = [
+      "symbol",
+      "image",
+      "marker",
+      "pattern",
+      "view",
+      "svg"
+    ],
+    svgInvalidAncestors = [
+      "pattern",
+      "defs",
+      "symbol",
+      "metadata",
+      "clipPath",
+      "mask",
+      "desc"
+    ],
+    svgValidParents = ["symbol", "g", "a"], //BI-9820 多了个svg ie9 bug
+    tspanValidParents = svgValidParents.concat("text"),
+    attributesMap = {
+      cx: "left",
+      x: "left",
+      r: "radius",
+      cy: "top",
+      y: "top",
+      display: "visible",
+      visibility: "visible",
+      transform: "transformMatrix",
+      "fill-opacity": "fillOpacity",
+      "fill-rule": "fillRule",
+      "font-family": "fontFamily",
+      "font-size": "fontSize",
+      "font-style": "fontStyle",
+      "font-weight": "fontWeight",
+      "paint-order": "paintFirst",
+      "stroke-dasharray": "strokeDashArray",
+      "stroke-linecap": "strokeLineCap",
+      "stroke-linejoin": "strokeLineJoin",
+      "stroke-miterlimit": "strokeMiterLimit",
+      "stroke-opacity": "strokeOpacity",
+      "stroke-width": "strokeWidth",
+      "text-decoration": "textDecoration",
+      "text-anchor": "textAnchor",
+      opacity: "opacity"
+    },
+    colorAttributes = {
+      stroke: "strokeOpacity",
+      fill: "fillOpacity"
+    };
 
   fabric.svgValidTagNamesRegEx = getSvgRegex(svgValidTagNames);
   fabric.svgViewBoxElementsRegEx = getSvgRegex(svgViewBoxElements);
@@ -4603,8 +4628,8 @@ if (typeof console !== 'undefined') {
   fabric.svgValidParentsRegEx = getSvgRegex(svgValidParents);
   fabric.tspanValidParentsRegEx = getSvgRegex(tspanValidParents);
 
-  fabric.cssRules = { };
-  fabric.gradientDefs = { };
+  fabric.cssRules = {};
+  fabric.gradientDefs = {};
 
   function normalizeAttr(attr) {
     // transform attribute names
@@ -4615,70 +4640,65 @@ if (typeof console !== 'undefined') {
   }
 
   function normalizeValue(attr, value, parentAttributes, fontSize) {
-    var isArray = Object.prototype.toString.call(value) === '[object Array]',
-        parsed;
+    var isArray = Object.prototype.toString.call(value) === "[object Array]",
+      parsed;
 
-    if ((attr === 'fill' || attr === 'stroke') && value === 'none') {
-      value = '';
-    }
-    else if (attr === 'strokeDashArray') {
-      if (value === 'none') {
+    if ((attr === "fill" || attr === "stroke") && value === "none") {
+      value = "";
+    } else if (attr === "strokeDashArray") {
+      if (value === "none") {
         value = null;
+      } else {
+        value = value
+          .replace(/,/g, " ")
+          .split(/\s+/)
+          .map(function(n) {
+            return parseFloat(n);
+          });
       }
-      else {
-        value = value.replace(/,/g, ' ').split(/\s+/).map(function(n) {
-          return parseFloat(n);
-        });
-      }
-    }
-    else if (attr === 'transformMatrix') {
+    } else if (attr === "transformMatrix") {
       if (parentAttributes && parentAttributes.transformMatrix) {
         value = multiplyTransformMatrices(
-          parentAttributes.transformMatrix, fabric.parseTransformAttribute(value));
-      }
-      else {
+          parentAttributes.transformMatrix,
+          fabric.parseTransformAttribute(value)
+        );
+      } else {
         value = fabric.parseTransformAttribute(value);
       }
-    }
-    else if (attr === 'visible') {
-      value = value !== 'none' && value !== 'hidden';
+    } else if (attr === "visible") {
+      value = value !== "none" && value !== "hidden";
       // display=none on parent element always takes precedence over child element
       if (parentAttributes && parentAttributes.visible === false) {
         value = false;
       }
-    }
-    else if (attr === 'opacity') {
+    } else if (attr === "opacity") {
       value = parseFloat(value);
-      if (parentAttributes && typeof parentAttributes.opacity !== 'undefined') {
+      if (parentAttributes && typeof parentAttributes.opacity !== "undefined") {
         value *= parentAttributes.opacity;
       }
-    }
-    else if (attr === 'textAnchor' /* text-anchor */) {
-      value = value === 'start' ? 'left' : value === 'end' ? 'right' : 'center';
-    }
-    else if (attr === 'paintFirst') {
-      var fillIndex = value.indexOf('fill');
-      var strokeIndex = value.indexOf('stroke');
-      var value = 'fill';
+    } else if (attr === "textAnchor" /* text-anchor */) {
+      value = value === "start" ? "left" : value === "end" ? "right" : "center";
+    } else if (attr === "paintFirst") {
+      var fillIndex = value.indexOf("fill");
+      var strokeIndex = value.indexOf("stroke");
+      var value = "fill";
       if (fillIndex > -1 && strokeIndex > -1 && strokeIndex < fillIndex) {
-        value = 'stroke';
+        value = "stroke";
+      } else if (fillIndex === -1 && strokeIndex > -1) {
+        value = "stroke";
       }
-      else if (fillIndex === -1 && strokeIndex > -1) {
-        value = 'stroke';
-      }
-    }
-    else {
+    } else {
       parsed = isArray ? value.map(parseUnit) : parseUnit(value, fontSize);
     }
 
-    return (!isArray && isNaN(parsed) ? value : parsed);
+    return !isArray && isNaN(parsed) ? value : parsed;
   }
 
   /**
-    * @private
-    */
+   * @private
+   */
   function getSvgRegex(arr) {
-    return new RegExp('^(' + arr.join('|') + ')\\b', 'i');
+    return new RegExp("^(" + arr.join("|") + ")\\b", "i");
   }
 
   /**
@@ -4687,24 +4707,30 @@ if (typeof console !== 'undefined') {
    */
   function _setStrokeFillOpacity(attributes) {
     for (var attr in colorAttributes) {
-
-      if (typeof attributes[colorAttributes[attr]] === 'undefined' || attributes[attr] === '') {
+      if (
+        typeof attributes[colorAttributes[attr]] === "undefined" ||
+        attributes[attr] === ""
+      ) {
         continue;
       }
 
-      if (typeof attributes[attr] === 'undefined') {
+      if (typeof attributes[attr] === "undefined") {
         if (!fabric.Object.prototype[attr]) {
           continue;
         }
         attributes[attr] = fabric.Object.prototype[attr];
       }
 
-      if (attributes[attr].indexOf('url(') === 0) {
+      if (attributes[attr].indexOf("url(") === 0) {
         continue;
       }
 
       var color = new fabric.Color(attributes[attr]);
-      attributes[attr] = color.setAlpha(toFixed(color.getAlpha() * attributes[colorAttributes[attr]], 2)).toRgba();
+      attributes[attr] = color
+        .setAlpha(
+          toFixed(color.getAlpha() * attributes[colorAttributes[attr]], 2)
+        )
+        .toRgba();
     }
     return attributes;
   }
@@ -4713,7 +4739,11 @@ if (typeof console !== 'undefined') {
    * @private
    */
   function _getMultipleNodes(doc, nodeNames) {
-    var nodeName, nodeArray = [], nodeList, i, len;
+    var nodeName,
+      nodeArray = [],
+      nodeList,
+      i,
+      len;
     for (i = 0, len = nodeNames.length; i < len; i++) {
       nodeName = nodeNames[i];
       nodeList = doc.getElementsByTagName(nodeName);
@@ -4732,8 +4762,10 @@ if (typeof console !== 'undefined') {
    */
   fabric.parseTransformAttribute = (function() {
     function rotateMatrix(matrix, args) {
-      var cos = Math.cos(args[0]), sin = Math.sin(args[0]),
-          x = 0, y = 0;
+      var cos = Math.cos(args[0]),
+        sin = Math.sin(args[0]),
+        x = 0,
+        y = 0;
       if (args.length === 3) {
         x = args[1];
         y = args[2];
@@ -4749,7 +4781,7 @@ if (typeof console !== 'undefined') {
 
     function scaleMatrix(matrix, args) {
       var multiplierX = args[0],
-          multiplierY = (args.length === 2) ? args[1] : args[0];
+        multiplierY = args.length === 2 ? args[1] : args[0];
 
       matrix[0] = multiplierX;
       matrix[3] = multiplierY;
@@ -4768,100 +4800,135 @@ if (typeof console !== 'undefined') {
 
     // identity matrix
     var iMatrix = [
-          1, // a
-          0, // b
-          0, // c
-          1, // d
-          0, // e
-          0  // f
-        ],
+        1, // a
+        0, // b
+        0, // c
+        1, // d
+        0, // e
+        0 // f
+      ],
+      // == begin transform regexp
+      number = fabric.reNum,
+      commaWsp = "(?:\\s+,?\\s*|,\\s*)",
+      skewX = "(?:(skewX)\\s*\\(\\s*(" + number + ")\\s*\\))",
+      skewY = "(?:(skewY)\\s*\\(\\s*(" + number + ")\\s*\\))",
+      rotate =
+        "(?:(rotate)\\s*\\(\\s*(" +
+        number +
+        ")(?:" +
+        commaWsp +
+        "(" +
+        number +
+        ")" +
+        commaWsp +
+        "(" +
+        number +
+        "))?\\s*\\))",
+      scale =
+        "(?:(scale)\\s*\\(\\s*(" +
+        number +
+        ")(?:" +
+        commaWsp +
+        "(" +
+        number +
+        "))?\\s*\\))",
+      translate =
+        "(?:(translate)\\s*\\(\\s*(" +
+        number +
+        ")(?:" +
+        commaWsp +
+        "(" +
+        number +
+        "))?\\s*\\))",
+      matrix =
+        "(?:(matrix)\\s*\\(\\s*" +
+        "(" +
+        number +
+        ")" +
+        commaWsp +
+        "(" +
+        number +
+        ")" +
+        commaWsp +
+        "(" +
+        number +
+        ")" +
+        commaWsp +
+        "(" +
+        number +
+        ")" +
+        commaWsp +
+        "(" +
+        number +
+        ")" +
+        commaWsp +
+        "(" +
+        number +
+        ")" +
+        "\\s*\\))",
+      transform =
+        "(?:" +
+        matrix +
+        "|" +
+        translate +
+        "|" +
+        scale +
+        "|" +
+        rotate +
+        "|" +
+        skewX +
+        "|" +
+        skewY +
+        ")",
+      transforms =
+        "(?:" + transform + "(?:" + commaWsp + "*" + transform + ")*" + ")",
+      transformList = "^\\s*(?:" + transforms + "?)\\s*$",
+      // http://www.w3.org/TR/SVG/coords.html#TransformAttribute
+      reTransformList = new RegExp(transformList),
+      // == end transform regexp
 
-        // == begin transform regexp
-        number = fabric.reNum,
-
-        commaWsp = '(?:\\s+,?\\s*|,\\s*)',
-
-        skewX = '(?:(skewX)\\s*\\(\\s*(' + number + ')\\s*\\))',
-
-        skewY = '(?:(skewY)\\s*\\(\\s*(' + number + ')\\s*\\))',
-
-        rotate = '(?:(rotate)\\s*\\(\\s*(' + number + ')(?:' +
-                    commaWsp + '(' + number + ')' +
-                    commaWsp + '(' + number + '))?\\s*\\))',
-
-        scale = '(?:(scale)\\s*\\(\\s*(' + number + ')(?:' +
-                    commaWsp + '(' + number + '))?\\s*\\))',
-
-        translate = '(?:(translate)\\s*\\(\\s*(' + number + ')(?:' +
-                    commaWsp + '(' + number + '))?\\s*\\))',
-
-        matrix = '(?:(matrix)\\s*\\(\\s*' +
-                  '(' + number + ')' + commaWsp +
-                  '(' + number + ')' + commaWsp +
-                  '(' + number + ')' + commaWsp +
-                  '(' + number + ')' + commaWsp +
-                  '(' + number + ')' + commaWsp +
-                  '(' + number + ')' +
-                  '\\s*\\))',
-
-        transform = '(?:' +
-                    matrix + '|' +
-                    translate + '|' +
-                    scale + '|' +
-                    rotate + '|' +
-                    skewX + '|' +
-                    skewY +
-                    ')',
-
-        transforms = '(?:' + transform + '(?:' + commaWsp + '*' + transform + ')*' + ')',
-
-        transformList = '^\\s*(?:' + transforms + '?)\\s*$',
-
-        // http://www.w3.org/TR/SVG/coords.html#TransformAttribute
-        reTransformList = new RegExp(transformList),
-        // == end transform regexp
-
-        reTransform = new RegExp(transform, 'g');
+      reTransform = new RegExp(transform, "g");
 
     return function(attributeValue) {
-
       // start with identity matrix
       var matrix = iMatrix.concat(),
-          matrices = [];
+        matrices = [];
 
       // return if no argument was given or
       // an argument does not match transform attribute regexp
-      if (!attributeValue || (attributeValue && !reTransformList.test(attributeValue))) {
+      if (
+        !attributeValue ||
+        (attributeValue && !reTransformList.test(attributeValue))
+      ) {
         return matrix;
       }
 
       attributeValue.replace(reTransform, function(match) {
-
-        var m = new RegExp(transform).exec(match).filter(function (match) {
-              // match !== '' && match != null
-              return (!!match);
-            }),
-            operation = m[1],
-            args = m.slice(2).map(parseFloat);
+        var m = new RegExp(transform).exec(match).filter(function(match) {
+            // match !== '' && match != null
+            return !!match;
+          }),
+          operation = m[1],
+          args = m.slice(2).map(parseFloat);
 
         switch (operation) {
-          case 'translate':
+          case "translate":
             translateMatrix(matrix, args);
             break;
-          case 'rotate':
+          case "rotate":
             args[0] = fabric.util.degreesToRadians(args[0]);
             rotateMatrix(matrix, args);
             break;
-          case 'scale':
+          case "scale":
             scaleMatrix(matrix, args);
             break;
-          case 'skewX':
+          case "skewX":
             skewMatrix(matrix, args, 2);
             break;
-          case 'skewY':
+          case "skewY":
             skewMatrix(matrix, args, 1);
             break;
-          case 'matrix':
+          case "matrix":
             matrix = args;
             break;
         }
@@ -4875,7 +4942,10 @@ if (typeof console !== 'undefined') {
       var combinedMatrix = matrices[0];
       while (matrices.length > 1) {
         matrices.shift();
-        combinedMatrix = fabric.util.multiplyTransformMatrices(combinedMatrix, matrices[0]);
+        combinedMatrix = fabric.util.multiplyTransformMatrices(
+          combinedMatrix,
+          matrices[0]
+        );
       }
       return combinedMatrix;
     };
@@ -4886,14 +4956,20 @@ if (typeof console !== 'undefined') {
    */
   function parseStyleString(style, oStyle) {
     var attr, value;
-    style.replace(/;\s*$/, '').split(';').forEach(function (chunk) {
-      var pair = chunk.split(':');
+    style
+      .replace(/;\s*$/, "")
+      .split(";")
+      .forEach(function(chunk) {
+        var pair = chunk.split(":");
 
-      attr = pair[0].trim().toLowerCase();
-      value = attr === 'transform' ? pair[1].trim().replaceAll('px', '') : pair[1].trim();
+        attr = pair[0].trim().toLowerCase();
+        value =
+          attr === "transform"
+            ? pair[1].trim().replaceAll("px", "")
+            : pair[1].trim();
 
-      oStyle[attr] = value;
-    });
+        oStyle[attr] = value;
+      });
   }
 
   /**
@@ -4902,7 +4978,7 @@ if (typeof console !== 'undefined') {
   function parseStyleObject(style, oStyle) {
     var attr, value;
     for (var prop in style) {
-      if (typeof style[prop] === 'undefined') {
+      if (typeof style[prop] === "undefined") {
         continue;
       }
 
@@ -4917,9 +4993,9 @@ if (typeof console !== 'undefined') {
    * @private
    */
   function getGlobalStylesForElement(element, svgUid) {
-    var styles = { };
+    var styles = {};
     for (var rule in fabric.cssRules[svgUid]) {
-      if (elementMatchesRule(element, rule.split(' '))) {
+      if (elementMatchesRule(element, rule.split(" "))) {
         for (var property in fabric.cssRules[svgUid][rule]) {
           styles[property] = fabric.cssRules[svgUid][rule][property];
         }
@@ -4932,18 +5008,24 @@ if (typeof console !== 'undefined') {
    * @private
    */
   function elementMatchesRule(element, selectors) {
-    var firstMatching, parentMatching = true;
+    var firstMatching,
+      parentMatching = true;
     //start from rightmost selector.
     firstMatching = selectorMatches(element, selectors.pop());
     if (firstMatching && selectors.length) {
       parentMatching = doesSomeParentMatch(element, selectors);
     }
-    return firstMatching && parentMatching && (selectors.length === 0);
+    return firstMatching && parentMatching && selectors.length === 0;
   }
 
   function doesSomeParentMatch(element, selectors) {
-    var selector, parentMatching = true;
-    while (element.parentNode && element.parentNode.nodeType === 1 && selectors.length) {
+    var selector,
+      parentMatching = true;
+    while (
+      element.parentNode &&
+      element.parentNode.nodeType === 1 &&
+      selectors.length
+    ) {
       if (parentMatching) {
         selector = selectors.pop();
       }
@@ -4958,21 +5040,23 @@ if (typeof console !== 'undefined') {
    */
   function selectorMatches(element, selector) {
     var nodeName = element.nodeName,
-        classNames = element.getAttribute('class'),
-        id = element.getAttribute('id'), matcher, i;
+      classNames = element.getAttribute("class"),
+      id = element.getAttribute("id"),
+      matcher,
+      i;
     // i check if a selector matches slicing away part from it.
     // if i get empty string i should match
-    matcher = new RegExp('^' + nodeName, 'i');
-    selector = selector.replace(matcher, '');
+    matcher = new RegExp("^" + nodeName, "i");
+    selector = selector.replace(matcher, "");
     if (id && selector.length) {
-      matcher = new RegExp('#' + id + '(?![a-zA-Z\\-]+)', 'i');
-      selector = selector.replace(matcher, '');
+      matcher = new RegExp("#" + id + "(?![a-zA-Z\\-]+)", "i");
+      selector = selector.replace(matcher, "");
     }
     if (classNames && selector.length) {
-      classNames = classNames.split(' ');
-      for (i = classNames.length; i--;) {
-        matcher = new RegExp('\\.' + classNames[i] + '(?![a-zA-Z\\-]+)', 'i');
-        selector = selector.replace(matcher, '');
+      classNames = classNames.split(" ");
+      for (i = classNames.length; i--; ) {
+        matcher = new RegExp("\\." + classNames[i] + "(?![a-zA-Z\\-]+)", "i");
+        selector = selector.replace(matcher, "");
       }
     }
     return selector.length === 0;
@@ -4988,10 +5072,13 @@ if (typeof console !== 'undefined') {
     if (el) {
       return el;
     }
-    var node, i, len, nodelist = doc.getElementsByTagName('*');
+    var node,
+      i,
+      len,
+      nodelist = doc.getElementsByTagName("*");
     for (i = 0, len = nodelist.length; i < len; i++) {
       node = nodelist[i];
-      if (id === node.getAttribute('id')) {
+      if (id === node.getAttribute("id")) {
         return node;
       }
     }
@@ -5001,20 +5088,32 @@ if (typeof console !== 'undefined') {
    * @private
    */
   function parseUseDirectives(doc) {
-    var nodelist = _getMultipleNodes(doc, ['use', 'svg:use']), i = 0;
+    var nodelist = _getMultipleNodes(doc, ["use", "svg:use"]),
+      i = 0;
 
     while (nodelist.length && i < nodelist.length) {
       var el = nodelist[i],
-          xlink = el.getAttribute('xlink:href').substr(1),
-          x = el.getAttribute('x') || 0,
-          y = el.getAttribute('y') || 0,
-          el2 = elementById(doc, xlink).cloneNode(true),
-          currentTrans = (el2.getAttribute('transform') || '') + ' translate(' + x + ', ' + y + ')',
-          parentNode, oldLength = nodelist.length, attr, j, attrs, len;
+        xlink = el.getAttribute("xlink:href").substr(1),
+        x = el.getAttribute("x") || 0,
+        y = el.getAttribute("y") || 0,
+        el2 = elementById(doc, xlink).cloneNode(true),
+        currentTrans =
+          (el2.getAttribute("transform") || "") +
+          " translate(" +
+          x +
+          ", " +
+          y +
+          ")",
+        parentNode,
+        oldLength = nodelist.length,
+        attr,
+        j,
+        attrs,
+        len;
 
       applyViewboxTransform(el2);
       if (/^svg$/i.test(el2.nodeName)) {
-        var el3 = el2.ownerDocument.createElement('g');
+        var el3 = el2.ownerDocument.createElement("g");
         for (j = 0, attrs = el2.attributes, len = attrs.length; j < len; j++) {
           attr = attrs.item(j);
           el3.setAttribute(attr.nodeName, attr.nodeValue);
@@ -5028,21 +5127,24 @@ if (typeof console !== 'undefined') {
 
       for (j = 0, attrs = el.attributes, len = attrs.length; j < len; j++) {
         attr = attrs.item(j);
-        if (attr.nodeName === 'x' || attr.nodeName === 'y' || attr.nodeName === 'xlink:href') {
+        if (
+          attr.nodeName === "x" ||
+          attr.nodeName === "y" ||
+          attr.nodeName === "xlink:href"
+        ) {
           continue;
         }
 
-        if (attr.nodeName === 'transform') {
-          currentTrans = attr.nodeValue + ' ' + currentTrans;
-        }
-        else {
+        if (attr.nodeName === "transform") {
+          currentTrans = attr.nodeValue + " " + currentTrans;
+        } else {
           el2.setAttribute(attr.nodeName, attr.nodeValue);
         }
       }
 
-      el2.setAttribute('transform', currentTrans);
-      el2.setAttribute('instantiated_by_use', '1');
-      el2.removeAttribute('id');
+      el2.setAttribute("transform", currentTrans);
+      el2.setAttribute("instantiated_by_use", "1");
+      el2.removeAttribute("id");
       parentNode = el.parentNode;
       parentNode.replaceChild(el2, el);
       // some browsers do not shorten nodelist after replaceChild (IE8)
@@ -5055,35 +5157,52 @@ if (typeof console !== 'undefined') {
   // http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute
   // matches, e.g.: +14.56e-12, etc.
   var reViewBoxAttrValue = new RegExp(
-    '^' +
-    '\\s*(' + fabric.reNum + '+)\\s*,?' +
-    '\\s*(' + fabric.reNum + '+)\\s*,?' +
-    '\\s*(' + fabric.reNum + '+)\\s*,?' +
-    '\\s*(' + fabric.reNum + '+)\\s*' +
-    '$'
+    "^" +
+      "\\s*(" +
+      fabric.reNum +
+      "+)\\s*,?" +
+      "\\s*(" +
+      fabric.reNum +
+      "+)\\s*,?" +
+      "\\s*(" +
+      fabric.reNum +
+      "+)\\s*,?" +
+      "\\s*(" +
+      fabric.reNum +
+      "+)\\s*" +
+      "$"
   );
 
   /**
    * Add a <g> element that envelop all child elements and makes the viewbox transformMatrix descend on all elements
    */
   function applyViewboxTransform(element) {
-
-    var viewBoxAttr = element.getAttribute('viewBox'),
-        scaleX = 1,
-        scaleY = 1,
-        minX = 0,
-        minY = 0,
-        viewBoxWidth, viewBoxHeight, matrix, el,
-        widthAttr = element.getAttribute('width'),
-        heightAttr = element.getAttribute('height'),
-        x = element.getAttribute('x') || 0,
-        y = element.getAttribute('y') || 0,
-        preserveAspectRatio = element.getAttribute('preserveAspectRatio') || '',
-        missingViewBox = (!viewBoxAttr || !fabric.svgViewBoxElementsRegEx.test(element.nodeName)
-                           || !(viewBoxAttr = viewBoxAttr.match(reViewBoxAttrValue))),
-        missingDimAttr = (!widthAttr || !heightAttr || widthAttr === '100%' || heightAttr === '100%'),
-        toBeParsed = missingViewBox && missingDimAttr,
-        parsedDim = { }, translateMatrix = '';
+    var viewBoxAttr = element.getAttribute("viewBox"),
+      scaleX = 1,
+      scaleY = 1,
+      minX = 0,
+      minY = 0,
+      viewBoxWidth,
+      viewBoxHeight,
+      matrix,
+      el,
+      widthAttr = element.getAttribute("width"),
+      heightAttr = element.getAttribute("height"),
+      x = element.getAttribute("x") || 0,
+      y = element.getAttribute("y") || 0,
+      preserveAspectRatio = element.getAttribute("preserveAspectRatio") || "",
+      missingViewBox =
+        !viewBoxAttr ||
+        !fabric.svgViewBoxElementsRegEx.test(element.nodeName) ||
+        !(viewBoxAttr = viewBoxAttr.match(reViewBoxAttrValue)),
+      missingDimAttr =
+        !widthAttr ||
+        !heightAttr ||
+        widthAttr === "100%" ||
+        heightAttr === "100%",
+      toBeParsed = missingViewBox && missingDimAttr,
+      parsedDim = {},
+      translateMatrix = "";
 
     parsedDim.width = 0;
     parsedDim.height = 0;
@@ -5109,55 +5228,72 @@ if (typeof console !== 'undefined') {
       parsedDim.height = parseUnit(heightAttr);
       scaleX = parsedDim.width / viewBoxWidth;
       scaleY = parsedDim.height / viewBoxHeight;
-    }
-    else {
+    } else {
       parsedDim.width = viewBoxWidth;
       parsedDim.height = viewBoxHeight;
     }
 
     // default is to preserve aspect ratio
-    preserveAspectRatio = fabric.util.parsePreserveAspectRatioAttribute(preserveAspectRatio);
-    if (preserveAspectRatio.alignX !== 'none') {
+    preserveAspectRatio = fabric.util.parsePreserveAspectRatioAttribute(
+      preserveAspectRatio
+    );
+    if (preserveAspectRatio.alignX !== "none") {
       //translate all container for the effect of Mid, Min, Max
-      scaleY = scaleX = (scaleX > scaleY ? scaleY : scaleX);
+      scaleY = scaleX = scaleX > scaleY ? scaleY : scaleX;
     }
 
-    if (scaleX === 1 && scaleY === 1 && minX === 0 && minY === 0 && x === 0 && y === 0) {
+    if (
+      scaleX === 1 &&
+      scaleY === 1 &&
+      minX === 0 &&
+      minY === 0 &&
+      x === 0 &&
+      y === 0
+    ) {
       return parsedDim;
     }
 
     if (x || y) {
-      translateMatrix = ' translate(' + parseUnit(x) + ' ' + parseUnit(y) + ') ';
+      translateMatrix =
+        " translate(" + parseUnit(x) + " " + parseUnit(y) + ") ";
     }
 
-    matrix = translateMatrix + ' matrix(' + scaleX +
-                  ' 0' +
-                  ' 0 ' +
-                  scaleY + ' ' +
-                  (minX * scaleX) + ' ' +
-                  (minY * scaleY) + ') ';
+    matrix =
+      translateMatrix +
+      " matrix(" +
+      scaleX +
+      " 0" +
+      " 0 " +
+      scaleY +
+      " " +
+      minX * scaleX +
+      " " +
+      minY * scaleY +
+      ") ";
 
-    if (element.nodeName === 'svg') {
-      el = element.ownerDocument.createElement('g');
+    if (element.nodeName === "svg") {
+      el = element.ownerDocument.createElement("g");
       // element.firstChild != null
       while (element.firstChild) {
         el.appendChild(element.firstChild);
       }
       element.appendChild(el);
-    }
-    else {
+    } else {
       el = element;
-      matrix = el.getAttribute('transform') + matrix;
+      matrix = el.getAttribute("transform") + matrix;
     }
 
-    el.setAttribute('transform', matrix);
+    el.setAttribute("transform", matrix);
     return parsedDim;
   }
 
   function hasAncestorWithNodeName(element, nodeName) {
     while (element && (element = element.parentNode)) {
-      if (element.nodeName && nodeName.test(element.nodeName.replace('svg:', ''))
-        && !element.getAttribute('instantiated_by_use')) {
+      if (
+        element.nodeName &&
+        nodeName.test(element.nodeName.replace("svg:", "")) &&
+        !element.getAttribute("instantiated_by_use")
+      ) {
         return true;
       }
     }
@@ -5183,9 +5319,11 @@ if (typeof console !== 'undefined') {
 
     parseUseDirectives(doc);
 
-    var svgUid =  fabric.Object.__uid++, i, len,
-        options = applyViewboxTransform(doc),
-        descendants = fabric.util.toArray(doc.getElementsByTagName('*'));
+    var svgUid = fabric.Object.__uid++,
+      i,
+      len,
+      options = applyViewboxTransform(doc),
+      descendants = fabric.util.toArray(doc.getElementsByTagName("*"));
     options.crossOrigin = parsingOptions && parsingOptions.crossOrigin;
     options.svgUid = svgUid;
 
@@ -5202,9 +5340,15 @@ if (typeof console !== 'undefined') {
 
     var elements = descendants.filter(function(el) {
       applyViewboxTransform(el);
-      var isTextElContainsTspan = el.nodeName === "text" && el.firstChild != null && el.firstChild.nodeName === 'tspan';
-      return !isTextElContainsTspan && fabric.svgValidTagNamesRegEx.test(el.nodeName.replace('svg:', '')) &&
-            !hasAncestorWithNodeName(el, fabric.svgInvalidAncestorsRegEx); // http://www.w3.org/TR/SVG/struct.html#DefsElement
+      var isTextElContainsTspan =
+        el.nodeName === "text" &&
+        el.firstChild != null &&
+        el.firstChild.nodeName === "tspan";
+      return (
+        !isTextElContainsTspan &&
+        fabric.svgValidTagNamesRegEx.test(el.nodeName.replace("svg:", "")) &&
+        !hasAncestorWithNodeName(el, fabric.svgInvalidAncestorsRegEx)
+      ); // http://www.w3.org/TR/SVG/struct.html#DefsElement
     });
 
     if (!elements || (elements && !elements.length)) {
@@ -5215,18 +5359,27 @@ if (typeof console !== 'undefined') {
     fabric.gradientDefs[svgUid] = fabric.getGradientDefs(doc);
     fabric.cssRules[svgUid] = fabric.getCSSRules(doc);
     // Precedence of rules:   style > class > attribute
-    fabric.parseElements(elements, function(instances, elements) {
-      if (callback) {
-        callback(instances, options, elements, descendants);
-      }
-    }, clone(options), reviver, parsingOptions);
+    fabric.parseElements(
+      elements,
+      function(instances, elements) {
+        if (callback) {
+          callback(instances, options, elements, descendants);
+        }
+      },
+      clone(options),
+      reviver,
+      parsingOptions
+    );
   };
 
   var reFontDeclaration = new RegExp(
-    '(normal|italic)?\\s*(normal|small-caps)?\\s*' +
-    '(normal|bold|bolder|lighter|100|200|300|400|500|600|700|800|900)?\\s*(' +
+    "(normal|italic)?\\s*(normal|small-caps)?\\s*" +
+      "(normal|bold|bolder|lighter|100|200|300|400|500|600|700|800|900)?\\s*(" +
       fabric.reNum +
-    '(?:px|cm|mm|em|pt|pc|in)*)(?:\\/(normal|' + fabric.reNum + '))?\\s+(.*)');
+      "(?:px|cm|mm|em|pt|pc|in)*)(?:\\/(normal|" +
+      fabric.reNum +
+      "))?\\s+(.*)"
+  );
 
   extend(fabric, {
     /**
@@ -5244,18 +5397,20 @@ if (typeof console !== 'undefined') {
         return;
       }
       var fontStyle = match[1],
-          // font variant is not used
-          // fontVariant = match[2],
-          fontWeight = match[3],
-          fontSize = match[4],
-          lineHeight = match[5],
-          fontFamily = match[6];
+        // font variant is not used
+        // fontVariant = match[2],
+        fontWeight = match[3],
+        fontSize = match[4],
+        lineHeight = match[5],
+        fontFamily = match[6];
 
       if (fontStyle) {
         oStyle.fontStyle = fontStyle;
       }
       if (fontWeight) {
-        oStyle.fontWeight = isNaN(parseFloat(fontWeight)) ? fontWeight : parseFloat(fontWeight);
+        oStyle.fontWeight = isNaN(parseFloat(fontWeight))
+          ? fontWeight
+          : parseFloat(fontWeight);
       }
       if (fontSize) {
         oStyle.fontSize = parseUnit(fontSize);
@@ -5264,7 +5419,7 @@ if (typeof console !== 'undefined') {
         oStyle.fontFamily = fontFamily;
       }
       if (lineHeight) {
-        oStyle.lineHeight = lineHeight === 'normal' ? 1 : lineHeight;
+        oStyle.lineHeight = lineHeight === "normal" ? 1 : lineHeight;
       }
     },
 
@@ -5278,20 +5433,25 @@ if (typeof console !== 'undefined') {
      */
     getGradientDefs: function(doc) {
       var tagArray = [
-            'linearGradient',
-            'radialGradient',
-            'svg:linearGradient',
-            'svg:radialGradient'],
-          elList = _getMultipleNodes(doc, tagArray),
-          el, j = 0, id, xlink,
-          gradientDefs = { }, idsToXlinkMap = { };
+          "linearGradient",
+          "radialGradient",
+          "svg:linearGradient",
+          "svg:radialGradient"
+        ],
+        elList = _getMultipleNodes(doc, tagArray),
+        el,
+        j = 0,
+        id,
+        xlink,
+        gradientDefs = {},
+        idsToXlinkMap = {};
 
       j = elList.length;
 
       while (j--) {
         el = elList[j];
-        xlink = el.getAttribute('xlink:href');
-        id = el.getAttribute('id');
+        xlink = el.getAttribute("xlink:href");
+        id = el.getAttribute("id");
         if (xlink) {
           idsToXlinkMap[id] = xlink.substr(1);
         }
@@ -5318,51 +5478,82 @@ if (typeof console !== 'undefined') {
      * @return {Object} object containing parsed attributes' names/values
      */
     parseAttributes: function(element, attributes, svgUid) {
-
       if (!element) {
         return;
       }
 
       var value,
-          parentAttributes = { },
-          fontSize;
+        parentAttributes = {},
+        fontSize;
 
-      if (typeof svgUid === 'undefined') {
-        svgUid = element.getAttribute('svgUid');
+      if (typeof svgUid === "undefined") {
+        svgUid = element.getAttribute("svgUid");
       }
       // if there's a parent container (`g` or `a` or `symbol` node), parse its attributes recursively upwards
-      if (element.parentNode && fabric.svgValidParentsRegEx.test(element.parentNode.nodeName)) {
-        parentAttributes = fabric.parseAttributes(element.parentNode, attributes, svgUid);
-      } else if(element.nodeName === 'tspan' && element.parentNode && fabric.tspanValidParentsRegEx.test(element.parentNode.nodeName)) {
+      if (
+        element.parentNode &&
+        fabric.svgValidParentsRegEx.test(element.parentNode.nodeName)
+      ) {
+        parentAttributes = fabric.parseAttributes(
+          element.parentNode,
+          attributes,
+          svgUid
+        );
+      } else if (
+        element.nodeName === "tspan" &&
+        element.parentNode &&
+        fabric.tspanValidParentsRegEx.test(element.parentNode.nodeName)
+      ) {
         //tspan的特殊处理 tspan的父节点是text，不渲染text的同时，需要根据text的父节点g确定tspan的位置
-        parentAttributes = fabric.parseAttributes(element.parentNode, attributes, svgUid)
+        parentAttributes = fabric.parseAttributes(
+          element.parentNode,
+          attributes,
+          svgUid
+        );
       }
 
-      fontSize = (parentAttributes && parentAttributes.fontSize ) ||
-                 element.getAttribute('font-size') || fabric.Text.DEFAULT_SVG_FONT_SIZE;
+      fontSize =
+        (parentAttributes && parentAttributes.fontSize) ||
+        element.getAttribute("font-size") ||
+        fabric.Text.DEFAULT_SVG_FONT_SIZE;
 
       var ownAttributes = attributes.reduce(function(memo, attr) {
         value = element.getAttribute(attr);
-        if (value) { // eslint-disable-line
+        if (value) {
+          // eslint-disable-line
           memo[attr] = value;
         }
         return memo;
-      }, { });
+      }, {});
       // add values parsed from style, which take precedence over attributes
       // (see: http://www.w3.org/TR/SVG/styling.html#UsingPresentationAttributes)
-      ownAttributes = extend(ownAttributes,
-        extend(getGlobalStylesForElement(element, svgUid), fabric.parseStyleAttribute(element)));
-      var normalizedAttr, normalizedValue, normalizedStyle = {};
+      ownAttributes = extend(
+        ownAttributes,
+        extend(
+          getGlobalStylesForElement(element, svgUid),
+          fabric.parseStyleAttribute(element)
+        )
+      );
+      var normalizedAttr,
+        normalizedValue,
+        normalizedStyle = {};
       for (var attr in ownAttributes) {
         normalizedAttr = normalizeAttr(attr);
-        normalizedValue = normalizeValue(normalizedAttr, ownAttributes[attr], parentAttributes, fontSize);
+        normalizedValue = normalizeValue(
+          normalizedAttr,
+          ownAttributes[attr],
+          parentAttributes,
+          fontSize
+        );
         normalizedStyle[normalizedAttr] = normalizedValue;
       }
       if (normalizedStyle && normalizedStyle.font) {
         fabric.parseFontDeclaration(normalizedStyle.font, normalizedStyle);
       }
       var mergedAttrs = extend(parentAttributes, normalizedStyle);
-      return fabric.svgValidParentsRegEx.test(element.nodeName) ? mergedAttrs : _setStrokeFillOpacity(mergedAttrs);
+      return fabric.svgValidParentsRegEx.test(element.nodeName)
+        ? mergedAttrs
+        : _setStrokeFillOpacity(mergedAttrs);
     },
 
     /**
@@ -5374,8 +5565,20 @@ if (typeof console !== 'undefined') {
      * @param {Object} [options] Options object
      * @param {Function} [reviver] Method for further parsing of SVG elements, called after each fabric object created.
      */
-    parseElements: function(elements, callback, options, reviver, parsingOptions) {
-      new fabric.ElementsParser(elements, callback, options, reviver, parsingOptions).parse();
+    parseElements: function(
+      elements,
+      callback,
+      options,
+      reviver,
+      parsingOptions
+    ) {
+      new fabric.ElementsParser(
+        elements,
+        callback,
+        options,
+        reviver,
+        parsingOptions
+      ).parse();
     },
 
     /**
@@ -5386,17 +5589,16 @@ if (typeof console !== 'undefined') {
      * @return {Object} Objects with values parsed from style attribute of an element
      */
     parseStyleAttribute: function(element) {
-      var oStyle = { },
-          style = element.getAttribute('style');
+      var oStyle = {},
+        style = element.getAttribute("style");
 
       if (!style) {
         return oStyle;
       }
 
-      if (typeof style === 'string') {
+      if (typeof style === "string") {
         parseStyleString(style, oStyle);
-      }
-      else {
+      } else {
         parseStyleObject(style, oStyle);
       }
 
@@ -5411,17 +5613,18 @@ if (typeof console !== 'undefined') {
      * @return {Array} array of points
      */
     parsePointsAttribute: function(points) {
-
       // points attribute is required and must not be empty
       if (!points) {
         return null;
       }
 
       // replace commas with whitespace and remove bookending whitespace
-      points = points.replace(/,/g, ' ').trim();
+      points = points.replace(/,/g, " ").trim();
 
       points = points.split(/\s+/);
-      var parsedPoints = [], i, len;
+      var parsedPoints = [],
+        i,
+        len;
 
       for (i = 0, len = points.length; i < len; i += 2) {
         parsedPoints.push({
@@ -5447,8 +5650,11 @@ if (typeof console !== 'undefined') {
      * @return {Object} CSS rules of this document
      */
     getCSSRules: function(doc) {
-      var styles = doc.getElementsByTagName('style'), i, len,
-          allRules = { }, rules;
+      var styles = doc.getElementsByTagName("style"),
+        i,
+        len,
+        allRules = {},
+        rules;
 
       // very crude parsing of style contents
       for (i = 0, len = styles.length; i < len; i++) {
@@ -5456,35 +5662,36 @@ if (typeof console !== 'undefined') {
         var styleContents = styles[i].textContent || styles[i].text;
 
         // remove comments
-        styleContents = styleContents.replace(/\/\*[\s\S]*?\*\//g, '');
-        if (styleContents.trim() === '') {
+        styleContents = styleContents.replace(/\/\*[\s\S]*?\*\//g, "");
+        if (styleContents.trim() === "") {
           continue;
         }
         rules = styleContents.match(/[^{]*\{[\s\S]*?\}/g);
-        rules = rules.map(function(rule) { return rule.trim(); });
+        rules = rules.map(function(rule) {
+          return rule.trim();
+        });
         // eslint-disable-next-line no-loop-func
         rules.forEach(function(rule) {
-
           var match = rule.match(/([\s\S]*?)\s*\{([^}]*)\}/),
-              ruleObj = { }, declaration = match[2].trim(),
-              propertyValuePairs = declaration.replace(/;$/, '').split(/\s*;\s*/);
+            ruleObj = {},
+            declaration = match[2].trim(),
+            propertyValuePairs = declaration.replace(/;$/, "").split(/\s*;\s*/);
 
           for (i = 0, len = propertyValuePairs.length; i < len; i++) {
             var pair = propertyValuePairs[i].split(/\s*:\s*/),
-                property = pair[0],
-                value = pair[1];
+              property = pair[0],
+              value = pair[1];
             ruleObj[property] = value;
           }
           rule = match[1];
-          rule.split(',').forEach(function(_rule) {
-            _rule = _rule.replace(/^svg/i, '').trim();
-            if (_rule === '') {
+          rule.split(",").forEach(function(_rule) {
+            _rule = _rule.replace(/^svg/i, "").trim();
+            if (_rule === "") {
               return;
             }
             if (allRules[_rule]) {
               fabric.util.object.extend(allRules[_rule], ruleObj);
-            }
-            else {
+            } else {
               allRules[_rule] = fabric.util.object.clone(ruleObj);
             }
           });
@@ -5504,29 +5711,39 @@ if (typeof console !== 'undefined') {
      * @param {String} [options.crossOrigin] crossOrigin crossOrigin setting to use for external resources
      */
     loadSVGFromURL: function(url, callback, reviver, options) {
-
-      url = url.replace(/^\n\s*/, '').trim();
+      url = url.replace(/^\n\s*/, "").trim();
       new fabric.util.request(url, {
-        method: 'get',
+        method: "get",
         onComplete: onComplete
       });
 
       function onComplete(r) {
-
         var xml = r.responseXML;
-        if (xml && !xml.documentElement && fabric.window.ActiveXObject && r.responseText) {
-          xml = new ActiveXObject('Microsoft.XMLDOM');
-          xml.async = 'false';
+        if (
+          xml &&
+          !xml.documentElement &&
+          fabric.window.ActiveXObject &&
+          r.responseText
+        ) {
+          xml = new ActiveXObject("Microsoft.XMLDOM");
+          xml.async = "false";
           //IE chokes on DOCTYPE
-          xml.loadXML(r.responseText.replace(/<!DOCTYPE[\s\S]*?(\[[\s\S]*\])*?>/i, ''));
+          xml.loadXML(
+            r.responseText.replace(/<!DOCTYPE[\s\S]*?(\[[\s\S]*\])*?>/i, "")
+          );
         }
         if (!xml || !xml.documentElement) {
           callback && callback(null);
         }
 
-        fabric.parseSVGDocument(xml.documentElement, function (results, _options, elements, allElements) {
-          callback && callback(results, _options, elements, allElements);
-        }, reviver, options);
+        fabric.parseSVGDocument(
+          xml.documentElement,
+          function(results, _options, elements, allElements) {
+            callback && callback(results, _options, elements, allElements);
+          },
+          reviver,
+          options
+        );
       }
     },
 
@@ -5542,26 +5759,29 @@ if (typeof console !== 'undefined') {
     loadSVGFromString: function(string, callback, reviver, options) {
       string = string.trim();
       var doc;
-      if (typeof DOMParser !== 'undefined') {
+      if (typeof DOMParser !== "undefined") {
         var parser = new DOMParser();
         if (parser && parser.parseFromString) {
-          doc = parser.parseFromString(string, 'text/xml');
+          doc = parser.parseFromString(string, "text/xml");
         }
-      }
-      else if (fabric.window.ActiveXObject) {
-        doc = new ActiveXObject('Microsoft.XMLDOM');
-        doc.async = 'false';
+      } else if (fabric.window.ActiveXObject) {
+        doc = new ActiveXObject("Microsoft.XMLDOM");
+        doc.async = "false";
         // IE chokes on DOCTYPE
-        doc.loadXML(string.replace(/<!DOCTYPE[\s\S]*?(\[[\s\S]*\])*?>/i, ''));
+        doc.loadXML(string.replace(/<!DOCTYPE[\s\S]*?(\[[\s\S]*\])*?>/i, ""));
       }
 
-      fabric.parseSVGDocument(doc.documentElement, function (results, _options, elements, allElements) {
-        callback(results, _options, elements, allElements);
-      }, reviver, options);
+      fabric.parseSVGDocument(
+        doc.documentElement,
+        function(results, _options, elements, allElements) {
+          callback(results, _options, elements, allElements);
+        },
+        reviver,
+        options
+      );
     }
   });
-
-})(typeof exports !== 'undefined' ? exports : this);
+})(typeof exports !== "undefined" ? exports : this);
 
 
 fabric.ElementsParser = function(elements, callback, options, reviver, parsingOptions) {

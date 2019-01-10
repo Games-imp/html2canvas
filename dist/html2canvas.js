@@ -1,6 +1,6 @@
 /*
   html2canvas 0.5.0-beta4 <http://html2canvas.hertzen.com>
-  Copyright (c) 2018 Niklas von Hertzen
+  Copyright (c) 2019 Niklas von Hertzen
 
   Released under  License
 */
@@ -3146,15 +3146,15 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
         var isMaptile = container.node.className.indexOf('leaflet-tile-container') > -1;
         this.setTransform(container.inverseTransform());
         shapes.filter(hasEntries).forEach(function (shape) {
-            if (isMaptile) {
-                // class为leaflet-tile-container的元素css中有scale属性，有缩放会使地图显示不全。
-                var w = shape[1][1] - shape[0][1];
-                var gap = ((w) / container.transformMatrix[0]) - w;
-                shape[1][1] += gap;
-                shape[2][1] += gap;
-                shape[2][2] += gap;
-                shape[3][2] += gap;
-            }
+            // if (isMaptile) {
+            //     // class为leaflet-tile-container的元素css中有scale属性，有缩放会使地图显示不全。
+            //     var w = shape[1][1] - shape[0][1];
+            //     var gap = ((w) / container.transformMatrix[0]) - w;
+            //     shape[1][1] += gap;
+            //     shape[2][1] += gap;
+            //     shape[2][2] += gap;
+            //     shape[3][2] += gap;
+            // }
             this.shape(shape).clip();
         }, this);
         this.setTransform(container.parseTransform());
