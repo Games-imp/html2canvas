@@ -119,7 +119,7 @@ CanvasRenderer.prototype.clip = function (shapes, callback, context, container) 
                 shapes[len - 1][3][2] += container.transformMatrix[5];
             }
         }
-        var isMaptile = container.node.className.indexOf('leaflet-tile-container') > -1;
+        // var isMaptile = container.node.className.indexOf('leaflet-tile-container') > -1;
         this.setTransform(container.inverseTransform());
         shapes.filter(hasEntries).forEach(function (shape) {
             // if (isMaptile) {
