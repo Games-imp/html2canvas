@@ -142,12 +142,12 @@ exports.offsetBounds = function (node, matrix) {
     var parent = node.offsetParent ? exports.offsetBounds(node.offsetParent) : {top: 0, left: 0};
 
     return {
-        top: node.offsetTop + parent.top,
-        bottom: node.offsetTop + node.offsetHeight + parent.top,
-        right: node.offsetLeft + parent.left + node.offsetWidth,
-        left: node.offsetLeft + parent.left,
-        width: node.offsetWidth,
-        height: node.offsetHeight
+        top: Math.round(node.offsetTop + parent.top),
+        bottom: Math.round(node.offsetTop + node.offsetHeight + parent.top),
+        right: Math.round(node.offsetLeft + parent.left + node.offsetWidth),
+        left: Math.round(node.offsetLeft + parent.left),
+        width: Math.round(node.offsetWidth),
+        height: Math.round(node.offsetHeight)
     };
 };
 
