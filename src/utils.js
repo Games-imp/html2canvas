@@ -51,12 +51,13 @@ exports.getBounds = function (node) {
         var top = node.nodeName === 'svg' && (BI && BI.isIE && BI.isIE() && BI.getIEVersion() === 10) ? (clientRect.top - clientRect.height) : clientRect.top;
         var bottom = node.nodeName === 'svg' && (BI && BI.isIE && BI.isIE() && BI.getIEVersion() === 10) ? (clientRect.bottom - clientRect.height) : clientRect.bottom;
         return {
-            top: top,
-            bottom: bottom || (clientRect.top + clientRect.height),
-            right: clientRect.left + width,
-            left: clientRect.left,
-            width: width,
-            height: node.offsetHeight == null ? clientRect.height : node.offsetHeight
+            // BI-66796: 有小数在模板比较长的情况比如 16000，canvas会画错
+            top: Math.round(top),
+            bottom: Math.round(bottom || (clientRect.top + clientRect.height)),
+            right: Math.round(clientRect.left + width),
+            left: Math.round(clientRect.left),
+            width: Math.round(width),
+            height: Math.round(node.offsetHeight == null ? clientRect.height : node.offsetHeight)
         };
     }
     return {};
@@ -128,12 +129,13 @@ exports.offsetBounds = function (node, matrix) {
         }
 
         return {
-            top: -matrix[5] + bounds.top,
-            bottom: bounds.bottom,
-            right: bounds.right,
-            left: -matrix[4] + bounds.left,
-            width: bounds.width,
-            height: bounds.height
+            // BI-66796: 有小数在模板比较长的情况比如 16000，canvas会画错
+            top: Math.round(-matrix[5] + bounds.top),
+            bottom: Math.round(bounds.bottom),
+            right: Math.round(bounds.right),
+            left: Math.round(-matrix[4] + bounds.left),
+            width: Math.round(bounds.width),
+            height: Math.round(bounds.height)
         };
     }
 
